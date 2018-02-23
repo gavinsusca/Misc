@@ -62,12 +62,12 @@ Pitcher 1 (era, whip, etc.. )   				vs 	 Pitcher 2 (era, whip, etc.. )  -- notes
 useful pitch stuff... K's per 9. homerun rate, gb/fb rate, fastball speed 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	last 4 games (avg.iso.SO's) | vs. pitcher | away/home | vs righty/lefty
-Lineup 1 							Lineup 2
-Leadoff (last 15 ab's) && info against current pitcher		Leadoff (plus last 15 ab's) && info against current pitcher
+Lineup 1 																		Lineup 2
+Leadoff (last 15 ab's) && info against current pitcher													Leadoff (plus last 15 ab's) && info against current pitcher
 2 Leadoff (last 15 ab's) && lifetime info against current pitcher
-3 Leadoff ((AB's) .344|5 EBH|4SO ) & ( .288|23ABs|6 HRs|4SO ) && away(.214|SLG|xx|/.291|SLG|xxhome? && righty(.214|SLG|xx|/.291|SLG|xxlefty
+3 Leadoff ((AB's) .344|5 EBH|4SO ) & ( .288|23ABs|6 HRs|4SO ) && A:(xABs|.303|HRs)H:(xABs|.303|HRs) && righty(.214|SLG|xx|/.291|SLG|xxlefty
 
-5 Leadoff ((11) .400|d_ISO|4SO ) & ( 23ABs|.288|SLG|4SO ) & (.214|ISO/.291|ISO) & (.214|SLG/.291|SLG)
+5 L/R Last Name(8 char max) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)
 6 Leadoff (last 15 ab's) && info against current pitcher
 ..
 ..
@@ -84,4 +84,70 @@ report var, next number
 
 DailyLines
 Unique ID... Parlay ID... awayTeam 1, homeTeam 2, run line, over/under, mL team 1, mL team 2, umpire   game result awayTeam 1(runs), game result homeTeam 2(runs).  bet.. bet result. 
+
+
+
+
+
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+Take 3 
+** add a link to a key for explaination
+d_ISO = ([Doubles x .67] + [Triples x .67] + [Home Runs x 1])/[At Bats]
+
+BB Daily Report
+
+
+
+
+Game 1 (7:00PM)
+_____________________________
+_____________________________
+Toronto Maple Leafs (7,3)   -159 
+	VS. 
+Florida Panthers (4-6)         +139
+______________________________
+______________________________
+Over/Under - 6.0 
+Weather: 16* and Sunny with 4 mph winds blowing In
+
+Pitcher 1 (era, whip, etc.. )(LS)(Date)(er, whip, etc..), (2LS)(Date)(er, whip, etc..)  (era home :: era away)  	…..useful pitch stuff... K's per 9. homerun rate, gb/fb rate, fastball speed 			 
+ 	<>	
+Pitcher 2 (era, whip, etc.. )(LS)(Date)(er, whip, etc..)(2LS)(Date)(er, whip, etc..)(era home :: era away) 		…..useful pitch stuff... K's per 9. homerun rate, gb/fb rate, fastball speed 	
+ 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	last 4 games (avg.iso.SO's) | vs. pitcher | away A:/H:home | VR:righty/VL:lefty
+Lineup 1 																	
+1 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+2 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+3 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+4 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+5 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+6 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+7 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+8 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+9 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+**** add position check for pitcher in hitting lineup exception*** 
+fucking NL
+..
+..
+Lineup 2 																	
+1 L/R (8Last Name) L4:(11ABs|.400|.231|4SO) - vP:(11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+2 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+3 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+4 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+5 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+6 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+7 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+8 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+9 L/R (8Last Name) (11ABs|.400|.231|4SO) - A:(xABs|.303|HRs)/H:(xABs|.303|HRs) - VL:(.214|HRs/.291|HRs)/VR:(.214|HRs/.291|HRs)	
+**** add position check for pitcher in hitting lineup exception*** 
+fucking NL 
+
+
+------------------------------------------------------------------------------------
+Umpire - Name1 (Stats ) -- Notes
  

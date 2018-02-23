@@ -1,3 +1,5 @@
+package baseball;
+
 
 
 
@@ -16,6 +18,7 @@ public class SoupFileCrawl {
 
 //	Elements temp, games, pitchers, awayTeam;
 //	Document doc; 
+    static String last4Games, theStats;
 	
     public static void main(String[] args) throws IOException {
     	
@@ -78,9 +81,28 @@ public class SoupFileCrawl {
    	
    	
 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
     	
  //   	/*
     	
+ 
+ //game log section
     	//gets player stats.
    	//last 4 games for each player
    	// still need to manipulate the url to get the player id correctly 
@@ -90,15 +112,13 @@ public class SoupFileCrawl {
 //			int ML = names.getElementsByTag("td").size();
 			
 			
-			System.out.println(" " + names.getElementsByTag("td").eachText()); 
+//error?			System.out.println(" " + names.getElementsByTag("td").eachText()); 
 			
 //gets whole list
 //		System.out.println(" " + names.getElementsByTag("tr").eachText()); 
 		
 //gets first of the list.. etc		
-		System.out.println(" " + names.getElementsByTag("tr").first().text()); 
-		System.out.println(" " + names.getElementsByTag("tr").get(2).text()); 
-		System.out.println();
+
 		System.out.println();
 		
 		
@@ -152,7 +172,8 @@ public class SoupFileCrawl {
 		AVG = (float)H/AB; 
 		
 		ISO = (float)TB_ISO/AB; 
-		
+	
+           /*     
 		//AVG.replaceFirst("^0.", ".");
 		System.out.println("last 4 games had " + AB + " at bats."); 
 		System.out.println("last 4 games had " + H + " hits."); 
@@ -160,25 +181,21 @@ public class SoupFileCrawl {
 		System.out.println("last 4 games had " + TB_ISO + " tb_iso.");
 		System.out.printf("last 4 games had %.3f avg. \n", AVG);
 		System.out.printf("last 4 games had %.3f d_iso. \n", ISO);
+            */	
+                
+		last4Games ="L4:"; 
 		
-		String last4Games =""; 
-		
-		System.out.printf("(%dABs|", AB); 
-		last4Games = last4Games + "(" + AB + "ABs|"; 
-		String battingAverage = String.format("%.3f" , AVG); 
-		System.out.printf(battingAverage.substring(battingAverage.indexOf('.')) + "|"); 
-		last4Games = last4Games + battingAverage.substring(battingAverage.indexOf('.')) + "|";
-		
-		
+	//	System.out.printf("(%dABs|", AB); 
+	//	last4Games = last4Games + "|" + AB + "ABs)"; 
+		String battingAverage = String.format("(%.3f" , AVG); 
+		last4Games = last4Games + "("+ battingAverage.substring(battingAverage.indexOf('.')) + "|";
 		String battingD_ISO = String.format("%.3f" , ISO); 
-		System.out.printf(battingD_ISO.substring(battingD_ISO.indexOf('.')) + "|"); 
 		last4Games = last4Games + battingD_ISO.substring(battingD_ISO.indexOf('.')) + "|"; 
-		
-		System.out.printf("%d" + "SO)-\n", SO);
-		last4Games = last4Games + SO + "SO)-"; 
+		last4Games = last4Games + SO + "SO"; 
+		last4Games = last4Games + "|" + AB + "ABs)-";
 		
 	//	System.out.println("last 4 games had a " + ISO + " iso.");
-		
+		System.out.println();
 		System.out.println("last 4 string " +last4Games);
 		System.out.println();
 		
@@ -191,10 +208,11 @@ public class SoupFileCrawl {
 		System.out.println(" " + names.getElementsByTag("tr").get(6).text());
 		System.out.println(" " + names.getElementsByTag("tr").get(7).text());
 		
-//list of all divs. 		
-		System.out.println(" " + names.getElementsByTag("div").eachText());
+//list of all divs. 	
+ //error?               System.out.println(" " + names.getElementsByTag("div").eachText());
+//error?		System.out.println(" " + names.getElementsByTag("div").eachText());
 //select from list		
-		System.out.println(" " + names.getElementsByTag("div").first().text());
+	//	System.out.println(" " + names.getElementsByTag("div").first().text());
 		
 
     	}
@@ -203,15 +221,82 @@ public class SoupFileCrawl {
 //    	*/
 		
 		
+
+
+
+
+
+
+
+
+//      /* 
+     
+    //splits for a player section 
+     String playerID = "12058"; 
+
+
+    Document player = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=" + playerID).userAgent("mozilla/17.0").get(); 
+    playerStats = player.select("div#splitstats.span49.mlb-player-splitsbox"); //worked for long string
+
+
+    for (Element hitterStat:playerStats){ 
+	
+                String homeStats = "";
+                String awayStats = "";
+                String vsLeft = "";
+                String vsRight = "";
+
+		System.out.println("-------------");
+
+
+                System.out.println();
+     
+                vsLeft = "-VL:(" + hitterStat.getElementsByTag("td").get(6).text() + "|" + hitterStat.getElementsByTag("td").get(3).text() + "HRs|" + hitterStat.getElementsByTag("td").get(1).text() + "ABs)" ;
+                vsRight = "/VR:("  + hitterStat.getElementsByTag("td").get((27*1)+6).text() + "|" + hitterStat.getElementsByTag("td").get((27*1)+3).text() + "HRs|" + hitterStat.getElementsByTag("td").get((27*1)+1).text() + "ABs)";
+                homeStats = "H:("  + hitterStat.getElementsByTag("td").get((27*2)+6).text() + "|" + hitterStat.getElementsByTag("td").get((27*2)+3).text() + "HRs|" + hitterStat.getElementsByTag("td").get((27*2)+1).text() + "ABs)";
+                awayStats = "/A:("  + hitterStat.getElementsByTag("td").get((27*3)+6).text() + "|" + hitterStat.getElementsByTag("td").get((27*3)+3).text() + "HRs|" + hitterStat.getElementsByTag("td").get((27*3)+1).text() + "ABs)";
+              
+                String theStats = last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
+		System.out.println(theStats);
+                System.out.println();
+                System.out.println();
+      
+            }//end of hitter Stat line
+            //end of splits for a player
+            
+//      */ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		
 		
 		
-		/*	
+//		/*	
 		// gives money lines. odds and over/under for todays games
 	
 	 	for (Element names:linesML){ 
 			i++; 
-			
+			System.out.println();
+                       
 		//	System.out.println(i + " " + names.getElementsByClass("td.align0l.bl-d").eachText());
 		//	System.out.println(i + " " + names.getElementsByTag("tr").first().text());
 		//	System.out.println(i + " " + names.getElementsByTag("img").first().text());
@@ -220,7 +305,7 @@ public class SoupFileCrawl {
 			// linesML.get(0); 
 			int ML = names.getElementsByTag("td").size();
 			System.out.println(ML); 
-			System.out.println(i + " " + names.getElementsByTag("td").eachText());
+//Error?			System.out.println(i + " " + names.getElementsByTag("td").eachText());
 			
 			System.out.println(i + " " + names.getElementsByTag("td").get(0));   ///holy shit! good to know.
 			System.out.println(i + " " + names.getElementsByTag("td").get(3));	///holy shit! good to know.	
@@ -256,7 +341,7 @@ public class SoupFileCrawl {
 		//	System.out.println(" : " + linesML.get(0).text()); 
 		}
 	
-	*/
+//	*/
 		
 		
 		
@@ -275,7 +360,8 @@ public class SoupFileCrawl {
 	
 		*/
 		
-	/*	for (int k =0; k < pitchers.size(); k++ ){
+	/*	
+                for (int k =0; k < pitchers.size(); k++ ){
 			Element gt = pitchers.get(k); 
 			System.out.println(i + " " + gt.getElementsByTag("a").eachText());  
 		}
@@ -360,7 +446,127 @@ public class SoupFileCrawl {
 						System.out.println(" " + gt.getElementsByTag("a").get(f).text()); 
 						
 						
-					}//end of forLoop Lineup				
+					}//end of forLoop Lineup	
+                                        
+                                        
+				
+					System.out.println("-------------------------------------"); 
+				}
+				//end show lineup
+				
+				//end of insert
+				
+				
+				
+				
+				System.out.println(); 
+
+				
+			} //end of pitchers loop.
+		
+			
+
+		}// end of for loop 
+		  	*/		
+		
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+		//todays game adjusted 
+//   		/* 
+		//Todays game 
+		//goalies. 
+		// lineups
+	  	for (Element today:games){ 
+	  		j++;	
+	  		System.out.println();
+			System.out.println("Game " + j); 
+		
+			System.out.println(today.getElementsByTag("div").first().text());
+			
+
+			for (int k = 0,  pitchLength = pitchers.size(); k < 1; k++ ){
+				Element ss;
+				
+			//	System.out.println(pitchLength + " is the pitchLength"); 
+				
+				if(j==1){
+				ss = pitchers.get(k); 
+				System.out.print(" " + ss.getElementsByTag("a").eachText());
+                                System.out.println(" " + ss.getElementsByTag("a").get(0).attr("href"));
+				ss = pitchers.get(k+1); 
+                                System.out.println("\t vs ");
+				System.out.print(" " + ss.getElementsByTag("a").eachText());
+                                System.out.println(" " + ss.getElementsByTag("a").get(0).attr("href"));}
+				else {
+				ss = pitchers.get((j - 1)*8); 
+				System.out.print(" " + ss.getElementsByTag("a").eachText());
+
+				
+				System.out.println(" " + ss.getElementsByTag("a").get(0).attr("href"));
+		//gives you the output you need to get the pitcherID		
+				
+//				System.out.println(" " + ss.getElementsByAttribute("href").get(0));
+//				System.out.println(" " + ss.getElementsByTag("a").get(0).outerHtml().substring(72));
+//				System.out.println(" " + ss.getElementsByTag("a").get(0).outerHtml().substring(72, 76));  //gives you playerID if string format never changes
+//				System.out.println(" " + ss.getElementsByTag("a").get(0).attr("href"));
+//			//	System.out.println(" " + ss.select("href").get(0).data());
+//				System.out.println(" " + ss.getElementsByAttribute("href").get(0).wholeText());
+			//	System.out.println(" " + ss.getElementById("id").text());
+			
+				
+				
+				
+				ss = pitchers.get((j - 1)*8 +1); 
+				System.out.println("\t vs ");
+				System.out.print(" " + ss.getElementsByTag("a").eachText());
+                                System.out.println(" " + ss.getElementsByTag("a").get(0).attr("href"));
+				}
+					
+//				System.out.println(); 
+//				dailyReport.showLineup(); 
+ 
+				//insert 
+				//shows lineup for the day
+				for (int p =0; p < 1; p++ ){
+					Element gt = pitchers.get(0);
+				
+//					 int sinz =  gt.getElementsByTag("a").size();
+					
+						
+					System.out.println("-------------------------------------"); 
+						//by amount of players.
+                                                System.out.println("Lineup1");
+					for (int f =0; f < 9; f++){
+						gt = pitchers.get(2); 
+						System.out.print(" " + gt.getElementsByTag("a").get(f).text() + " \t \t");
+						System.out.print(" " + gt.getElementsByTag("a").get(f).attr("href") + " \t \t\n");
+
+						
+						
+					}//end of Lineup1
+                                        System.out.println("--------");
+                                       
+                                        System.out.println("Lineup2");
+                                        for (int f =0; f < 9; f++){
+						gt = pitchers.get(3); 
+						System.out.print(" " + gt.getElementsByTag("a").get(f).text() + " \t \t"); 
+                                                System.out.print(" " + gt.getElementsByTag("a").get(f).attr("href") + " \t \t\n");
+	
+                    				}//end of Lineup2
+                                        
+                                        
+                                        
 				
 					System.out.println("-------------------------------------"); 
 				}
@@ -380,11 +586,29 @@ public class SoupFileCrawl {
 
 		}// end of for loop 
 		
-	  	*/		
-		
-		
-	
-		
+//	  	*/		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+                
+                
 		
 		
 		
@@ -466,7 +690,8 @@ public class SoupFileCrawl {
 			System.out.println("-------------------------------------"); 
 		}
 		//end show lineup
-    } */
+    } 
+        */
     
     
     

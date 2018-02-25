@@ -1,6 +1,4 @@
-
-
-
+package baseball;
 
 
 import java.io.File;
@@ -25,7 +23,7 @@ public class Soup2 {
     	
 //    	/*
     	
-    	SoupFileCrawl dailyReport = new SoupFileCrawl(); 
+    //	SoupFileCrawl dailyReport = new SoupFileCrawl(); 
 	
     	Document doc = Jsoup.connect("https://www.rotowire.com/hockey/nhl_lineups.htm").userAgent("mozilla/17.0").get(); 
     
@@ -383,7 +381,7 @@ public class Soup2 {
 		
 		
 		
- //  		/* 
+  		/* 
 		//Todays game 
 		//goalies. 
 		// lineups
@@ -503,7 +501,7 @@ public class Soup2 {
 		
 			
 		}// end of for loop 
-	//	  	*/		
+		  	*/		
 		
 		
 	
@@ -519,7 +517,7 @@ public class Soup2 {
 
 
 		//todays game adjusted 
-   		/* 
+  // 		/* 
 		//Todays game 
 		//goalies. 
 		// lineups
@@ -585,6 +583,7 @@ public class Soup2 {
                                                 System.out.println("Lineup1");
 					for (int f =0; f < 9; f++){
 						gt = pitchers.get(2); 
+                                            //    gt = pitchers.get((j*8)+2); 
 						System.out.print(" " + gt.getElementsByTag("a").get(f).text() + " \t \t");
 						System.out.print(" " + gt.getElementsByTag("a").get(f).attr("href") + " \t \t\n");
 
@@ -595,18 +594,52 @@ public class Soup2 {
                                        
                                         System.out.println("Lineup2");
                                         for (int f =0; f < 9; f++){
-						gt = pitchers.get(3);  //<----- This is where i need to change to get the proper lineup to grab
+                                          //  System.out.println(pitchers.eachText()); 
+                                          
+                                        gt = pitchers.get(3); 
+                                  //        gt = pitchers.get((j*8)+3); 
+                                          
+					//	gt = pitchers.get(3);  //<----- This is where i need to change to get the proper lineup to grab
 					//	gt = pitchers.get(10);  //<----- This is second game lineup 1
 					//	gt = pitchers.get(11);  //<----- This is second game lineup 2
+                                        
 
+                                        
+                                                //System.out.print( f +". " + gt.getElementsByClass("dlineups-pos").get(f).text());   //gives you position
+                                               // System.out.print(String.format("%-11s", lastName));
+                                               
+                                               String position = gt.getElementsByClass("dlineups-pos").get(f).text();
+                                                //System.out.printf("%s %-2s", f+1, gt.getElementsByClass("dlineups-pos").get(f).text());
+                                                System.out.printf("%s(%-2s) -", f+1, position);
+                                                
+                                                if(position.equalsIgnoreCase("P")){
+                                                //So you don't get hitters stats for the NL pitchers in the lineup
+                                                ;}
+                                                //String lastName = (" " + gt.getElementsByTag("a").get(f).text());
+                                                
+                                                
+                                                String lastName = (" " + gt.getElementsByTag("a").get(f).text());
+						int lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
+						if(lengthL > 10){
+							lengthL = 10; 
+						}
+		//				System.out.print(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
+						lastName =(lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
+						System.out.print(String.format("%-11s", lastName)); 
+                                                
+                                                
 
-						System.out.print(" " + gt.getElementsByTag("a").get(f).text() + " \t \t"); 
-                                                System.out.print(" " + gt.getElementsByTag("a").get(f).attr("href") + " \t \t\n");
+                                               // System.out.print(" " + gt.getElementsByTag("a").get(f).attr("href") + " \t \t\n");
+                                                
+                                                playerID = gt.getElementsByTag("a").get(f).attr("href");	
+                                                playerID = playerID.substring(playerID.lastIndexOf('=')+1);
+						//System.out.println(" " + playerID33.substring(playerID33.lastIndexOf('=')+1));
+                                                System.out.println(playerID);
 	
                     				}//end of Lineup2
                                         
                                         
-                                        System.out.println(pitchers.eachText());       //here is the line for all the correct players
+                                        //System.out.println(pitchers.eachText());       //here is the line for all the correct players
 				
 					System.out.println("-------------------------------------"); 
 				}
@@ -626,7 +659,7 @@ public class Soup2 {
 
 		}// end of for loop 
 		
-	  	*/		
+//	  	*/		
 
 
 

@@ -1,4 +1,4 @@
-
+package baseball;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,14 +9,14 @@ import java.util.regex.Pattern;
 import org.jsoup.select.*; 
 import org.jsoup.nodes.*; 
 import org.jsoup.*;
-
+//
 /**
  *
  * @author gavinsusca
  */
 public class DailyReportT {
     Document games, lines;
-    Elements allTodaysGames, linesML, pitchers;
+    Elements allTodaysGames, linesML, pitchers, hitters;
             
     public static void main(String[] args) throws IOException { 
     
@@ -29,14 +29,101 @@ public class DailyReportT {
             
     		
             theDay.headerinfo();
+            
         //    theDay.pitcherInfo(gameNumber);
             
     }
     
     
-    public void lineup(){}
+    public void lineUp(int gameNumber){
+        hitters = games.select("div.span15").select("div.span15").select("div.dlineups-half"); 
+        Element theHitter; 
     
-    public void playerInfo(String playerID){}
+        //System.out.println("-------------------------------------"); 
+        System.out.print("\n--------");                             
+        System.out.print("Away");
+        System.out.println("--------");
+            for (int f =0; f < 9; f++){
+	
+                theHitter = hitters.get((gameNumber*8)+2); 
+	
+                String position = theHitter.getElementsByClass("dlineups-pos").get(f).text();
+                System.out.printf("%s(%-2s) -", f+1, position);
+                                                
+                if(!position.equalsIgnoreCase("P")){
+                //So you don't get hitters stats for the NL pitchers in the lineup
+                ;}
+ 
+                
+            String lastName = (" " + theHitter.getElementsByTag("a").get(f).text());
+            int lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
+            
+            if(lengthL > 10){
+                lengthL = 10; 
+            }
+            
+            lastName =(lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
+            System.out.print(String.format("%-11s", lastName)); 
+                                                
+            //where you will get playerID                                           
+            String playerID = theHitter.getElementsByTag("a").get(f).attr("href");	
+            playerID = playerID.substring(playerID.lastIndexOf('=')+1);
+         
+            
+            
+            //So you don't get hitters stats for the NL pitchers in the lineup
+            if(!position.equalsIgnoreCase("P")){  
+            System.out.print(playerID);
+            //System.out.print(hitterStats(playerID));  //where you will send playerID to get playStats
+            ;}
+            
+            System.out.println();
+
+						
+	}//end of Lineup1
+            
+            
+            
+        System.out.print("\n--------");                             
+        System.out.print("Home");
+        System.out.println("--------");
+            for (int f =0; f < 9; f++){
+	
+                theHitter = hitters.get((gameNumber*8)+3); 
+	
+                String position = theHitter.getElementsByClass("dlineups-pos").get(f).text();
+                System.out.printf("%s(%-2s) -", f+1, position);
+                                                
+ 
+                
+            String lastName = (" " + theHitter.getElementsByTag("a").get(f).text());
+            int lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
+            
+            if(lengthL > 10){
+                lengthL = 10; 
+            }
+            
+            lastName =(lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
+            System.out.print(String.format("%-11s", lastName)); 
+                                                
+            //where you will get playerID                                           
+            String playerID = theHitter.getElementsByTag("a").get(f).attr("href");	
+            playerID = playerID.substring(playerID.lastIndexOf('=')+1);
+
+            //So you don't get hitters stats for the NL pitchers in the lineup
+            if(!position.equalsIgnoreCase("P")){  
+            System.out.print(playerID);
+            //System.out.print(hitterStats(playerID));   //where you will send playerID to get playStats
+            ;}
+            
+            System.out.println();
+            
+            
+            
+	 }//end of Lineup2     
+    
+    
+    }
     
     
     
@@ -48,16 +135,26 @@ public class DailyReportT {
 		
 		
 			
-			if(gameNumber==1){
+	if(gameNumber==1){
 				
 				//First pitcher - with ID
-				thePitcher = pitchers.get(gameNumber-1); 
-				System.out.print(" " + thePitcher.getElementsByTag("a").eachText());
+		thePitcher = pitchers.get(gameNumber-1); 
+                
+                String lastName = (" " + thePitcher.getElementsByTag("a").text());
+                int lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
+                
+                    if(lengthL > 10){
+                    lengthL = 10; 
+                    }
+                    
+                lastName =(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
+                System.out.print(String.format("%-11s", lastName)); 
+
 				
                 //where you will send PitcherID to get pitcherStats
                 String pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
                 pitcherID = pitcherID.substring(pitcherID.indexOf('=') + 1);	
-                System.out.println(pitcherID); 			//don't need this
+                System.out.println(" "+pitcherID); 			//don't need this
                 //pitcherStats(pitcherID); 
                 //where you will send PitcherID to get pitcherStats
                 
@@ -65,41 +162,70 @@ public class DailyReportT {
                 //Second pitcher - with ID
                 thePitcher = pitchers.get(gameNumber); 
                 System.out.println("\t vs ");
-                System.out.print(" " + thePitcher.getElementsByTag("a").eachText());
+                
+                lastName = (" " + thePitcher.getElementsByTag("a").text());
+                lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
+                
+                    if(lengthL > 10){
+                    lengthL = 10; 
+                    }
+                    
+                lastName =(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
+                System.out.print(String.format("%-11s", lastName)); 
+             
                 
                 //where you will send PitcherID to get pitcherStats
                 pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
                 pitcherID = pitcherID.substring(pitcherID.indexOf('=') + 1);	
-                System.out.println(pitcherID); 			//don't need this
+                System.out.println(" "+pitcherID); 			//don't need this
                 //pitcherStats(pitcherID); 
                 //where you will send PitcherID to get pitcherStats
                 
                           
-			} else {
+	} else {
 				
 				
-				//First pitcher - with ID
-				thePitcher = pitchers.get((gameNumber - 1)*8); 
-				System.out.print(" " + thePitcher.getElementsByTag("a").eachText());
+		//First pitcher - with ID
+		thePitcher = pitchers.get((gameNumber - 1)*8); 
+		
+                String lastName = (" " + thePitcher.getElementsByTag("a").text());
+                int lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
+                
+                    if(lengthL > 10){
+                    lengthL = 10; 
+                    }
+                    
+                lastName =(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
+                System.out.print(String.format("%-11s", lastName));
 				
-				//where you will send PitcherID to get pitcherStats
-				String pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
+		//where you will send PitcherID to get pitcherStats
+		String pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
                 pitcherID = pitcherID.substring(pitcherID.indexOf('=') + 1);	
-                System.out.println(pitcherID); 			//don't need this
+                System.out.println(" "+pitcherID); 			//don't need this
                 //pitcherStats(pitcherID); 
                 //where you will send PitcherID to get pitcherStats
 
                 
                 
                 //Second pitcher - with ID
-				thePitcher = pitchers.get((gameNumber - 1)*8 +1); 
-				System.out.println("\t vs ");
-				System.out.print(" " + thePitcher.getElementsByTag("a").eachText());
+		thePitcher = pitchers.get((gameNumber - 1)*8 +1); 
+		System.out.println("\t vs ");
+		lastName = (" " + thePitcher.getElementsByTag("a").text());
+                lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
+                
+                    if(lengthL > 10){
+                    lengthL = 10; 
+                    }
+                    
+                lastName =(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
+                System.out.print(String.format("%-11s", lastName)); 
 
-				//where you will send PitcherID to get pitcherStats
-				pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
+                
+                
+		//where you will send PitcherID to get pitcherStats
+		pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
                 pitcherID = pitcherID.substring(pitcherID.indexOf('=') + 1);	
-                System.out.println(pitcherID); 			//don't need this
+                System.out.println(" "+pitcherID); 			//don't need this
                 //pitcherStats(pitcherID); 
                 //where you will send PitcherID to get pitcherStats
 
@@ -109,9 +235,7 @@ public class DailyReportT {
     	
     }//end of pitcherInfo
     
-    
-    
-    
+
     
     
     public void headerinfo(){
@@ -119,9 +243,12 @@ public class DailyReportT {
         
         allTodaysGames = games.select("div.span15.dlineups-topbox");
         int j = 0;
+        
+
+        
         for (Element today:allTodaysGames){ 
             j++;
-	    System.out.println();
+	    System.out.println("\n\n");
 	    System.out.println();
             System.out.println("Game " + j); 
             System.out.println(today.getElementsByTag("div").first().text());
@@ -130,8 +257,11 @@ public class DailyReportT {
            moneyLines(j);
            overUnder(j-1); 
            pitcherInfo(j); 
-            
+           lineUp(j-1);
+           
         }//end of for loop
+        
+        
     }//end of headerInfo
     
     
@@ -142,10 +272,10 @@ public class DailyReportT {
     	
     	for (Element names:linesML){ 
     	if (overUnder ==0){
-    			System.out.println(" Over/Under " + names.getElementsByTag("td").get(5).text() + " runs.");
+    			System.out.println("Over/Under " + names.getElementsByTag("td").get(5).text() + " runs.\n");
     	} else{
     			overUnder = overUnder +1; 
-    			System.out.println(" Over/Under " + names.getElementsByTag("td").get((overUnder*5)+(overUnder-1)).text() + " runs.");  //logic for string line
+    			System.out.println("Over/Under " + names.getElementsByTag("td").get((overUnder*5)+(overUnder-1)).text() + " runs.\n");  //logic for string line
     		}
     	}
     	
@@ -174,6 +304,20 @@ public class DailyReportT {
             
 	 	
     }//end moneyLines
+    
+    
+    
+    public String hitterStats(String playerID){
+    return "";}
+    
+    
+    
+    public String pitcherStats(String playerID){
+    return "";}
+    
+    
+    
+    
     
     public void weather(){}
     //city info??

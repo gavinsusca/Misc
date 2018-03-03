@@ -1,4 +1,6 @@
-package baseball;
+
+
+
 
 
 import java.io.File;
@@ -23,7 +25,7 @@ public class Soup2 {
     	
 //    	/*
     	
-    //	SoupFileCrawl dailyReport = new SoupFileCrawl(); 
+    	SoupFileCrawl dailyReport = new SoupFileCrawl(); 
 	
     	Document doc = Jsoup.connect("https://www.rotowire.com/hockey/nhl_lineups.htm").userAgent("mozilla/17.0").get(); 
     
@@ -64,8 +66,13 @@ public class Soup2 {
 	
 		
 		
-		Document doc4 = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=6739").userAgent("mozilla/17.0").get(); 
+		//Document doc4 = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=6739").userAgent("mozilla/17.0").get(); 
+		Document doc4 = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=11179").userAgent("mozilla/17.0").get(); 
+		//Document doc4 = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=11438").userAgent("mozilla/17.0").get(); 
+		
    	Elements playerStats = doc4.select("div#gamelog.span49.gamelog-box"); //worked for long string
+   	
+   	
 //    	Elements playerStats = doc4.select("div#gamelog.span49.gamelog-box").select("table.tablesorter").select("tbody"); //worked for long string
 //    	Elements playerStats = doc4.select("tr.g17");
 		
@@ -80,10 +87,34 @@ public class Soup2 {
    	
 
  
- 
- 
- 
- 
+   	//Elements handed = doc4.select("div.span49.mlb-player-otherinfo").select("b");
+   	Elements handed = doc4.select("div.span49.mlb-player-otherinfo").select("b");
+   	
+   	System.out.println(handed.get(2).childNodes().get(0));
+   	
+   	System.out.print(handed.get(2).nextSibling());  ///This is what you want! 
+   	
+ for (Element getHand:handed){
+	 
+	 
+//	 Element getHand; 
+	 //System.out.print(getHand.getElementsByTag("b").eachText());
+//	System.out.println(getHand.ownText());
+
+//	System.out.print(getHand.nextSibling());
+	//System.out.println(handed.first().childNodes().get(1));
+	
+	
+	
+	
+
+//	 System.out.print(getHand.getElementsByTag("b").html()); 
+//	 System.out.print(getHand.getElementsByTag("b")); 
+	// System.out.print(getHand.getElementsByTag("b").html()); 
+	//System.out.print(getHand.getElementsByTag("b").html()); 
+	 
+
+ }
  
  
  
@@ -230,8 +261,9 @@ public class Soup2 {
 //      /* 
      
     //splits for a player section 
-     String playerID = "12058"; 
-
+  //   String playerID = "12058"; 
+     String playerID = "11179"; 
+    // 11179
 
     Document player = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=" + playerID).userAgent("mozilla/17.0").get(); 
     playerStats = player.select("div#splitstats.span49.mlb-player-splitsbox"); //worked for long string
@@ -254,15 +286,135 @@ public class Soup2 {
                 homeStats = "H:("  + hitterStat.getElementsByTag("td").get((27*2)+6).text() + "|" + hitterStat.getElementsByTag("td").get((27*2)+3).text() + "HRs|" + hitterStat.getElementsByTag("td").get((27*2)+1).text() + "ABs)";
                 awayStats = "/A:("  + hitterStat.getElementsByTag("td").get((27*3)+6).text() + "|" + hitterStat.getElementsByTag("td").get((27*3)+3).text() + "HRs|" + hitterStat.getElementsByTag("td").get((27*3)+1).text() + "ABs)";
               
-                String theStats = last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
-		System.out.println(theStats);
+                theStats = last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
+                System.out.println(theStats);
                 System.out.println();
                 System.out.println();
       
             }//end of hitter Stat line
             //end of splits for a player
+   
+    
+    
+    
+    
+    
+    
+    
+  //This gives you the current year. or any year you choose. 
+  //This gives you the current year. or any year you choose. 
+  //This gives you the current year. or any year you choose. 
+    
+    
+    int gameLines = player.select("div#basicstats.span49.mlb-player-basicstatsbox").select("tr").size();
+    playerStats = player.select("div#basicstats.span49.mlb-player-basicstatsbox").select("tr").select("td"); //worked for long string
+
+    for (int rr =0; rr< gameLines-1; rr++){
+    //	System.out.println("Entire List" +playerStats.eachText());
+    	
+    	//if(playerStats.get(rr*25).text().matches("2016") && playerStats.get(rr*25 +2).text().matches("MAJ")){
+    	if(playerStats.get(rr*25).text().matches("2018 Spring Training")){
+ 
+    		System.out.println(playerStats.get(rr*25)); 
+        	System.out.println(playerStats.get(rr*25 + 1)); 
+        	System.out.println(playerStats.get(rr*25 + 2));
+        	System.out.println(playerStats.get(rr*25 + 3));
+        	System.out.println(playerStats.get(rr*25 + 4));  //G
+        	System.out.println(playerStats.get(rr*25 + 5)); //PA
+        	System.out.println(playerStats.get(rr*25 + 6)); //AB
+        	System.out.println(playerStats.get(rr*25 + 7)); 
+        	System.out.println(playerStats.get(rr*25 + 8)); 
+        	System.out.println(playerStats.get(rr*25 + 9)); //XBH
+        	System.out.println(playerStats.get(rr*25 + 10));
+        	System.out.println(playerStats.get(rr*25 + 11));	
+        	System.out.println(playerStats.get(rr*25 + 12)); // HRs
+        	System.out.println(playerStats.get(rr*25 + 13));
+        	System.out.println(playerStats.get(rr*25 + 14));
+        	System.out.println(playerStats.get(rr*25 + 15));
+        	System.out.println(playerStats.get(rr*25 + 16));  
+        	System.out.println(playerStats.get(rr*25 + 17)); // SO's
+        	System.out.println(playerStats.get(rr*25 + 19));
+        	System.out.println(playerStats.get(rr*25 + 20));
+        	System.out.println(playerStats.get(rr*25 + 21));  //AVG
+        	System.out.println(playerStats.get(rr*25 + 22));
+        	System.out.println(playerStats.get(rr*25 + 23));
+        	System.out.println(playerStats.get(rr*25 + 24));
+        	
+        	String totalStats = "";
+        	
+        	// SO = ((Integer.parseInt(playerStats.get(rr*25 + 17).text()))/(Integer.parseInt(playerStats.get(rr*25 + 5).text())))*100;
+        	
+        	//determine K rate by dividing to find a float then convert back to an int
+        	int percent = (int)((float)(Integer.parseInt(playerStats.get(rr*25 + 17).text()))/(Integer.parseInt(playerStats.get(rr*25 + 5).text()))* 100);
+
+        	
+        	totalStats = "-T:("+ playerStats.get(rr*25 + 21).text() +"|" + playerStats.get(rr*25 + 12).text() + "HR|" + playerStats.get(rr*25 + 9).text() +"EBH|" + percent + "%K|" + playerStats.get(rr*25 + 6).text() +"AB" + ")";
+        	System.out.println(totalStats); 
+        	
+        	theStats = theStats + totalStats;
+        	System.out.println(theStats); 
+    	}
+    	
+    	
+    }
+  //This gives you the current year. or any year you choose. 
+  //This gives you the current year. or any year you choose. 
+    
+    
+    
+    
+    
+    /*
+    for (Element hitterHanded:playerStats){ 
+  // for (Element hitterHanded:playerStats){ 
+    
+    	//Element hitterHanded = playerStats.get(0);
+    	System.out.println("gg"); 
+    	int MLs = playerStats.size();
+    	System.out.println(MLs);
+    	
+    //	if (hitterHanded.getElementsByTag("td").get(2).text().matches("MAJ")){  }
+    
+    	
+    	
+    	
+    //	if (hitterHanded.getElementsByTag("td").get(0).text().matches("2017")){ }
+    	//System.out.println(hitterHanded.getElementsByTag("tr").get(0).text()); 
+    	
+    	System.out.println(hitterHanded.getElementsByTag("td").eachText()); 
+    	System.out.println(hitterHanded.getElementsByTag("td").eachText()); 
+    	
+    	
+    	
+    //	System.out.println(hitterHanded.getElementsByTag("td").get(3).text()); 
+    	
+    //	System.out.println(hitterHanded.getElementsByAttributeValue("style", "display:none").eachText());
+    	
+    	
+    	
+   /* 	
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(0).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(2).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(3).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(4).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(5).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(6).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(7).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(8).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(9).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(10).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(11).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(12).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(13).text());
+    	System.out.println(hitterHanded.getElementsByTag("tr").get(14).text());   */ 
+    	
+    		
+    	
+    	
+    //}
+    
             
-//      */ 
+   //  */ 
 
 
 
@@ -381,7 +533,7 @@ public class Soup2 {
 		
 		
 		
-  		/* 
+ //  		/* 
 		//Todays game 
 		//goalies. 
 		// lineups
@@ -443,6 +595,9 @@ public class Soup2 {
 //				System.out.println(); 
 //				dailyReport.showLineup(); 
  
+				
+				/*					
+				
 				//insert 
 				//shows lineup for the day
 				for (int p =0; p < 1; p++ ){
@@ -492,7 +647,7 @@ public class Soup2 {
 				
 				//end of insert
 				
-				
+				*/				
 				
 				
 				System.out.println(); 
@@ -501,7 +656,7 @@ public class Soup2 {
 		
 			
 		}// end of for loop 
-		  	*/		
+	//	  	*/		
 		
 		
 	
@@ -517,7 +672,7 @@ public class Soup2 {
 
 
 		//todays game adjusted 
-  // 		/* 
+   		/* 
 		//Todays game 
 		//goalies. 
 		// lineups
@@ -583,7 +738,6 @@ public class Soup2 {
                                                 System.out.println("Lineup1");
 					for (int f =0; f < 9; f++){
 						gt = pitchers.get(2); 
-                                            //    gt = pitchers.get((j*8)+2); 
 						System.out.print(" " + gt.getElementsByTag("a").get(f).text() + " \t \t");
 						System.out.print(" " + gt.getElementsByTag("a").get(f).attr("href") + " \t \t\n");
 
@@ -594,52 +748,18 @@ public class Soup2 {
                                        
                                         System.out.println("Lineup2");
                                         for (int f =0; f < 9; f++){
-                                          //  System.out.println(pitchers.eachText()); 
-                                          
-                                        gt = pitchers.get(3); 
-                                  //        gt = pitchers.get((j*8)+3); 
-                                          
-					//	gt = pitchers.get(3);  //<----- This is where i need to change to get the proper lineup to grab
+						gt = pitchers.get(3);  //<----- This is where i need to change to get the proper lineup to grab
 					//	gt = pitchers.get(10);  //<----- This is second game lineup 1
 					//	gt = pitchers.get(11);  //<----- This is second game lineup 2
-                                        
 
-                                        
-                                                //System.out.print( f +". " + gt.getElementsByClass("dlineups-pos").get(f).text());   //gives you position
-                                               // System.out.print(String.format("%-11s", lastName));
-                                               
-                                               String position = gt.getElementsByClass("dlineups-pos").get(f).text();
-                                                //System.out.printf("%s %-2s", f+1, gt.getElementsByClass("dlineups-pos").get(f).text());
-                                                System.out.printf("%s(%-2s) -", f+1, position);
-                                                
-                                                if(position.equalsIgnoreCase("P")){
-                                                //So you don't get hitters stats for the NL pitchers in the lineup
-                                                ;}
-                                                //String lastName = (" " + gt.getElementsByTag("a").get(f).text());
-                                                
-                                                
-                                                String lastName = (" " + gt.getElementsByTag("a").get(f).text());
-						int lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
-						if(lengthL > 10){
-							lengthL = 10; 
-						}
-		//				System.out.print(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
-						lastName =(lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
-						System.out.print(String.format("%-11s", lastName)); 
-                                                
-                                                
 
-                                               // System.out.print(" " + gt.getElementsByTag("a").get(f).attr("href") + " \t \t\n");
-                                                
-                                                playerID = gt.getElementsByTag("a").get(f).attr("href");	
-                                                playerID = playerID.substring(playerID.lastIndexOf('=')+1);
-						//System.out.println(" " + playerID33.substring(playerID33.lastIndexOf('=')+1));
-                                                System.out.println(playerID);
+						System.out.print(" " + gt.getElementsByTag("a").get(f).text() + " \t \t"); 
+                                                System.out.print(" " + gt.getElementsByTag("a").get(f).attr("href") + " \t \t\n");
 	
                     				}//end of Lineup2
                                         
                                         
-                                        //System.out.println(pitchers.eachText());       //here is the line for all the correct players
+                                        System.out.println(pitchers.eachText());       //here is the line for all the correct players
 				
 					System.out.println("-------------------------------------"); 
 				}
@@ -659,7 +779,7 @@ public class Soup2 {
 
 		}// end of for loop 
 		
-//	  	*/		
+	  	*/		
 
 
 

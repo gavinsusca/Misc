@@ -1,4 +1,4 @@
-package baseball;
+//package baseball;
 
 import java.io.File;
 import java.io.IOException;
@@ -260,7 +260,7 @@ public class DailyReportT {
            moneyLines(j);
            overUnder(j-1); 
            pitcherInfo(j); 
-  //         lineUp(j-1);
+   //        lineUp(j-1);
            
         }//end of for loop
         
@@ -324,28 +324,63 @@ public class DailyReportT {
         
         String last4Games = "";
     	String theStats = "";
-        String pitcherHanded, homeStats, awayStats, vsLeft, vsRight; 
+    	String pitcherSplits = "";
+        String pitcherHanded, homeStats, awayStats, vsLeft, vsRight, totalStats; 
    
     	        
         //Direction hitter hits Left Right or Switch.
         handed = player.select("div.span49.mlb-player-otherinfo").select("b");
+        
         // System.out.println(handed.get(3).childNodes().get(0));
-   	//System.out.print(handed.get(2).nextSibling().toString()); //This is what you want! 
+        //System.out.print(handed.get(2).nextSibling().toString()); //This is what you want! 
+        
         pitcherHanded = handed.get(3).nextSibling().toString();
         pitcherHanded = pitcherHanded.substring(1,2) + "HP"; 
         pitcherHanded = "/" + pitcherHanded + " ";
-        theStats = pitcherHanded;
+        theStats = theStats + pitcherHanded;
         
-        //System.out.print(theStats +"\n" ); 
-        
-        
+
         
         
         
         
         
-                
+        //players yearlyStats    
+	    int yearLines = player.select("div#advancedstats.span49.mlb-player-advstatbox").select("tr").size();
+	    playerStats = player.select("div#advancedstats.span49.mlb-player-advstatbox").select("tr").select("td"); //worked for long string
+
+	    for (int i =0; i< yearLines-1; i++){
+	    	
+	    	//check to see if has 2018 major league stats
+	    	//if(playerStats.get(i*25).text().matches("2018") && playerStats.get(i*25 +2).text().matches("MAJ")){
+	    	if(playerStats.get(i*17).text().matches("2017")){
+
+	    		
+	        	totalStats = "T:("+ playerStats.get(i*17 + 6).text() +"IP|" + playerStats.get(i*17 + 7).text() + "(K/9)|" + playerStats.get(i*17 + 8).text() 
+	        			+ "(BB/9)|" + playerStats.get(i*17 + 10).text() +"(HR/9)|" + playerStats.get(i*17 +11).text() + "(GB/FB)|" + playerStats.get(i*17 + 13).text() 
+	        			+ "(FBavg)|" + playerStats.get(i*17 + 14).text() + "(ERA)|" + playerStats.get(i*17 + 15).text() + "(FIP))";
+	        	theStats = theStats + totalStats;
+
+	        	
+	    	}//end if has major league 2018 stats.
+	    	
+	    	
+	    }//end check of each year.
         
+        
+        
+        
+        System.out.println(theStats);
+
+        
+        
+        
+        
+        
+        
+        
+        
+      
         
         
         
@@ -358,19 +393,27 @@ public class DailyReportT {
 
 			//Get splits. Home/Away/vLeft/vRight
 		    for (Element splitStats:playerStats){ 
-
-		                vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
-		                vsRight = "/VR:("  + splitStats.getElementsByTag("td").get((27*1)+6).text() + "|" + splitStats.getElementsByTag("td").get((27*1)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((27*1)+1).text() + "ABs)";
-		                homeStats = "H:("  + splitStats.getElementsByTag("td").get((27*2)+6).text() + "|" + splitStats.getElementsByTag("td").get((27*2)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((27*2)+1).text() + "ABs)";
-		                awayStats = "/A:("  + splitStats.getElementsByTag("td").get((27*3)+6).text() + "|" + splitStats.getElementsByTag("td").get((27*3)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((27*3)+1).text() + "ABs)";
+            
+	        //determine K rate by dividing to find a float then convert back to an int
+	        	int percentL = (int)((float)(Integer.parseInt(splitStats.getElementsByTag("td").get(2).text()))/(Integer.parseInt(splitStats.getElementsByTag("td").get(1).text()))* 100);
+	        	int percentR = (int)((float)(Integer.parseInt(splitStats.getElementsByTag("td").get((18*1)+2).text()))/(Integer.parseInt(splitStats.getElementsByTag("td").get((18*1)+1).text()))* 100);
+		    	
+		                vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(8).text() + "|" + splitStats.getElementsByTag("td").get(4).text() + "Hs|" + percentL + "K%|" + splitStats.getElementsByTag("td").get(3).text() + "BBs|" + splitStats.getElementsByTag("td").get(7).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)"  ;
+		                vsRight = "/VR:("  + splitStats.getElementsByTag("td").get((18*1)+8).text() + "|" + splitStats.getElementsByTag("td").get((18*1)+4).text() + "Hs|" + percentR + "K%|" + splitStats.getElementsByTag("td").get((18*1)+3).text() + "BBs|" + splitStats.getElementsByTag("td").get((18*1)+7).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*1)+1).text() + "ABs)";
+		                   
 		                
-		               //theStats =  theStats + last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
-                                theStats =  theStats + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
+		                homeStats = "H:("  + splitStats.getElementsByTag("td").get((18*2)+1).text() + "IP|" + splitStats.getElementsByTag("td").get((18*2)+5).text() + "Ks|" + splitStats.getElementsByTag("td").get((18*2)+6).text() + "BBs|" + splitStats.getElementsByTag("td").get((18*2)+7).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*2)+8).text() + "|" + splitStats.getElementsByTag("td").get((18*2)+9).text() + ")";
+		                //added an extra two to all the add statements because homeStats for pitchers had a couple extra fields. 
+		                awayStats = "/A:("  + splitStats.getElementsByTag("td").get((18*3)+3).text() + "IP|" + splitStats.getElementsByTag("td").get((18*3)+7).text() + "Ks|" + splitStats.getElementsByTag("td").get((18*3)+8).text() + "BBs|" + splitStats.getElementsByTag("td").get((18*3)+9).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*3)+10).text() + "|" + splitStats.getElementsByTag("td").get((18*3)+11).text() + ")";
+
+		                pitcherSplits = "\t\t"+ homeStats + awayStats + vsLeft + vsRight;
+		                
 
 		    }//end of hitter splitStats line
         
         
-                    System.out.println( theStats);
+                   
+                    System.out.println( pitcherSplits);
         
         
         

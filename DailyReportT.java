@@ -1,9 +1,14 @@
 //package baseball;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.jsoup.select.*; 
@@ -16,44 +21,53 @@ import org.jsoup.*;
  */
 public class DailyReportT {
     Document games, lines;
-    Elements allTodaysGames, linesML, pitchers, hitters, handed, playerStats;
+    Elements allTodaysGames, linesML, pitchers, hitters, playerStats, handed;
+    String format1;
+    //for file 
+    String nameFile = "dailyReport";
+    String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+	File theFile = new File(nameFile + "_" + date + ".txt"); 
+
+	PrintWriter printWriter; 
+	FileWriter fileOut; 
+    //end of for file info
+    
             
     public static void main(String[] args) throws IOException { 
     
-        DailyReportT theDay = new DailyReportT(); 
+        DailyReport theDay = new DailyReport(); 
         
             theDay.games = Jsoup.connect("https://www.rotowire.com/hockey/nhl_lineups.htm").userAgent("mozilla/17.0").get();
-            
-            // looks like ?odds=Stats has the earliest lines.
             theDay.lines = Jsoup.connect("https://www.rotowire.com/hockey/nhl-odds.php?odds=Stats").userAgent("mozilla/17.0").get(); 
             
-    		
+            theDay.createFile();
             theDay.headerinfo();
+            theDay.closeFile();
+
             
-        //    theDay.pitcherInfo(gameNumber);
-            
-    }
+    } //end of main
     
     
-    public void lineUp(int gameNumber){
+    public void lineUp(int gameNumber) throws IOException{
         hitters = games.select("div.span15").select("div.span15").select("div.dlineups-half"); 
         Element theHitter; 
     
         //System.out.println("-------------------------------------"); 
-        System.out.print("\n--------");                             
+        System.out.print("\n--------");
+        printWriter.print("\n--------");
+        
         System.out.print("Away");
+        printWriter.print("Away");
+        
         System.out.println("--------");
+        printWriter.println("--------");
             for (int f =0; f < 9; f++){
 	
                 theHitter = hitters.get((gameNumber*8)+2); 
 	
                 String position = theHitter.getElementsByClass("dlineups-pos").get(f).text();
-                System.out.printf("%s(%-2s) -", f+1, position);
-                                                
-                if(!position.equalsIgnoreCase("P")){
-                //So you don't get hitters stats for the NL pitchers in the lineup
-                ;}
- 
+                System.out.printf("%s.", f+1);
+                printWriter.printf("%s.", f+1);
                 
             String lastName = (" " + theHitter.getElementsByTag("a").get(f).text());
             int lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
@@ -64,36 +78,49 @@ public class DailyReportT {
             
             lastName =(lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
             System.out.print(String.format("%-11s", lastName)); 
+            printWriter.printf("%-11s", lastName); 
+ 
+            
+            
+            
+            System.out.printf(" %-2s ", position);
+            printWriter.format(" %-2s ", position);
+            
                                                 
             //where you will get playerID                                           
             String playerID = theHitter.getElementsByTag("a").get(f).attr("href");	
             playerID = playerID.substring(playerID.lastIndexOf('=')+1);
-         
-            
             
             //So you don't get hitters stats for the NL pitchers in the lineup
             if(!position.equalsIgnoreCase("P")){  
-            System.out.print(playerID);
-            //System.out.print(hitterStats(playerID));  //where you will send playerID to get playStats
+              System.out.print(hitterStats("11179"));
+              printWriter.print(hitterStats("11179"));
+           // System.out.print(hitterStats(playerID));  //where you will send playerID to get playStats
+           // printWriter.print(hitterStats(playerID));
             ;}
             
             System.out.println();
-
+            printWriter.println();
 						
 	}//end of Lineup1
             
             
             
-        System.out.print("\n--------");                             
+        System.out.print("\n--------");
+        printWriter.print("\n--------");
+        
         System.out.print("Home");
+        printWriter.print("Home");
+        
         System.out.println("--------");
+        printWriter.println("--------");
             for (int f =0; f < 9; f++){
 	
                 theHitter = hitters.get((gameNumber*8)+3); 
 	
                 String position = theHitter.getElementsByClass("dlineups-pos").get(f).text();
-                System.out.printf("%s(%-2s) -", f+1, position);
-                                                
+                System.out.printf("%s.", f+1);
+                printWriter.printf("%s.", f+1);             
  
                 
             String lastName = (" " + theHitter.getElementsByTag("a").get(f).text());
@@ -105,6 +132,10 @@ public class DailyReportT {
             
             lastName =(lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
             System.out.print(String.format("%-11s", lastName)); 
+            printWriter.print(String.format("%-11s", lastName)); 
+            
+            System.out.printf(" %-2s ", position);
+            printWriter.printf(" %-2s ", position);
                                                 
             //where you will get playerID                                           
             String playerID = theHitter.getElementsByTag("a").get(f).attr("href");	
@@ -112,12 +143,14 @@ public class DailyReportT {
 
             //So you don't get hitters stats for the NL pitchers in the lineup
             if(!position.equalsIgnoreCase("P")){  
-            System.out.print(playerID);
+            System.out.print(hitterStats("11179"));
+            printWriter.print(hitterStats("11179"));
             //System.out.print(hitterStats(playerID));   //where you will send playerID to get playStats
+            // printWriter.print(hitterStats(playerID));
             ;}
             
             System.out.println();
-            
+            printWriter.println();
             
             
 	 }//end of Lineup2     
@@ -132,7 +165,6 @@ public class DailyReportT {
     	pitchers = games.select("div.span15").select("div.span15").select("div.dlineups-half"); 
 		Element thePitcher;
 	
-		
 		
 			
 	if(gameNumber==1){
@@ -149,21 +181,25 @@ public class DailyReportT {
                     
                 lastName =(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
                 System.out.print(String.format("%-11s", lastName)); 
-
+                printWriter.format("%-11s", lastName);
 				
                 //where you will send PitcherID to get pitcherStats
                 String pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
                 pitcherID = pitcherID.substring(pitcherID.indexOf('=') + 1);	
-  //              System.out.println(" "+pitcherID); 			//don't need this
-//                System.out.print(" "+pitcherStats("10510")); 
+                //pitcherStats("10510");  //after today delete line, line below will suffice
                 //pitcherStats(pitcherID); 
-                pitcherStats("10510"); 
-                //where you will send PitcherID to get pitcherStats
+                System.out.print(pitcherStats("10510"));
+//                printWriter.print(pitcherStats("10510"));
+               // System.out.print(pitcherStats(pitcherID));
+               //  printWriter.print(pitcherStats(pitcherID));
+                
+                
                 
                 
                 //Second pitcher - with ID
                 thePitcher = pitchers.get(gameNumber); 
                 System.out.println("\t vs ");
+                printWriter.println("\t vs ");
                 
                 lastName = (" " + thePitcher.getElementsByTag("a").text());
                 lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
@@ -174,15 +210,17 @@ public class DailyReportT {
                     
                 lastName =(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
                 System.out.print(String.format("%-11s", lastName)); 
-             
+                printWriter.print(String.format("%-11s", lastName)); 
                 
                 //where you will send PitcherID to get pitcherStats
                 pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
                 pitcherID = pitcherID.substring(pitcherID.indexOf('=') + 1);	
-                System.out.println(" "+pitcherID); 			//don't need this
+                //pitcherStats("10510");
                 //pitcherStats(pitcherID); 
-                pitcherStats("10510"); 
-                //where you will send PitcherID to get pitcherStats
+                System.out.print(pitcherStats("10510"));
+               // printWriter.print(pitcherStats("10510"));
+               // System.out.print(pitcherStats(pitcherID));
+               //  printWriter.print(pitcherStats(pitcherID));
                 
                           
 	} else {
@@ -200,19 +238,24 @@ public class DailyReportT {
                     
                 lastName =(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
                 System.out.print(String.format("%-11s", lastName));
-				
+                printWriter.printf("%-11s", lastName);
+                
 		//where you will send PitcherID to get pitcherStats
 		String pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
                 pitcherID = pitcherID.substring(pitcherID.indexOf('=') + 1);	
-                System.out.println(" "+pitcherID); 			//don't need this
+                //pitcherStats("10510");  //after today delete line, line below will suffice
                 //pitcherStats(pitcherID); 
-                //where you will send PitcherID to get pitcherStats
-
+                System.out.print(pitcherStats("10510"));
+               // printWriter.print(pitcherStats("10510"));
+               // System.out.print(pitcherStats(pitcherID));
+               //  printWriter.print(pitcherStats(pitcherID));
                 
                 
                 //Second pitcher - with ID
 		thePitcher = pitchers.get((gameNumber - 1)*8 +1); 
 		System.out.println("\t vs ");
+		printWriter.println("\t vs ");
+		
 		lastName = (" " + thePitcher.getElementsByTag("a").text());
                 lengthL = lastName.substring(lastName.lastIndexOf(' ')).length();
                 
@@ -222,15 +265,18 @@ public class DailyReportT {
                     
                 lastName =(" " + lastName.substring(lastName.lastIndexOf(' '), (lastName.lastIndexOf(' ') + lengthL)));
                 System.out.print(String.format("%-11s", lastName)); 
-
+                printWriter.printf("%-11s", lastName); 
                 
                 
 		//where you will send PitcherID to get pitcherStats
 		pitcherID = " " + thePitcher.getElementsByTag("a").get(0).attr("href");
                 pitcherID = pitcherID.substring(pitcherID.indexOf('=') + 1);	
-                System.out.println(" "+pitcherID); 			//don't need this
+                //pitcherStats("10510");  //after today delete line, line below will suffice
                 //pitcherStats(pitcherID); 
-                //where you will send PitcherID to get pitcherStats
+                System.out.print(pitcherStats("10510"));
+               // printWriter.print(pitcherStats("10510"));
+               // System.out.print(pitcherStats(pitcherID));
+               //  printWriter.print(pitcherStats(pitcherID));
 
 			}
     	
@@ -252,15 +298,27 @@ public class DailyReportT {
         for (Element today:allTodaysGames){ 
             j++;
 	    System.out.println("\n\n");
+	    printWriter.println("\n\n");
+	    
 	    System.out.println();
+	    printWriter.println();
+	    
             System.out.println("Game " + j); 
+            printWriter.println("Game " + j); 
+            
             System.out.println(today.getElementsByTag("div").first().text());
+            printWriter.println(today.getElementsByTag("div").first().text());
+            
             System.out.println("------------------- ");	
+            printWriter.println("------------------- ");	
+            
+            overUnder(j-1);
             System.out.println("------------------- ");	
-           moneyLines(j);
-           overUnder(j-1); 
-           pitcherInfo(j); 
-   //        lineUp(j-1);
+            printWriter.println("------------------- ");	
+            
+            moneyLines(j); 
+            pitcherInfo(j); 
+            lineUp(j-1);
            
         }//end of for loop
         
@@ -272,13 +330,16 @@ public class DailyReportT {
     
     public void overUnder(int overUnder){
     //	overUnder = overUnder +1; 
+    	linesML = lines.select("div.row").select("tbody");
     	
     	for (Element names:linesML){ 
     	if (overUnder ==0){
-    			System.out.println("Over/Under " + names.getElementsByTag("td").get(5).text() + " runs.\n");
+    			System.out.println("Over/Under " + names.getElementsByTag("td").get(5).text() + " runs.");
+    			printWriter.println("Over/Under " + names.getElementsByTag("td").get(5).text() + " runs.");
     	} else{
     			overUnder = overUnder +1; 
-    			System.out.println("Over/Under " + names.getElementsByTag("td").get((overUnder*5)+(overUnder-1)).text() + " runs.\n");  //logic for string line
+    			System.out.println("Over/Under " + names.getElementsByTag("td").get((overUnder*5)+(overUnder-1)).text() + " runs.");  //logic for string line
+    			printWriter.println("Over/Under " + names.getElementsByTag("td").get((overUnder*5)+(overUnder-1)).text() + " runs.");  //logic for string line
     		}
     	}
     	
@@ -291,32 +352,159 @@ public class DailyReportT {
                 
 		// gives money lines. odds and over/under for todays games
         gameNumber = gameNumber-1;
-        linesML = lines.select("div.row").select("tbody");
+        //do need to do this twice. I moved the overUnder so it will hit that first
+        // linesML = lines.select("div.row").select("tbody");
  
             for (Element names:linesML){ 
                 if (gameNumber ==0){
                 System.out.println(" " + names.getElementsByTag("td").get(4).text() + " " + names.getElementsByTag("td").get(3).text() );
+                printWriter.println(" " + names.getElementsByTag("td").get(4).text() + " " + names.getElementsByTag("td").get(3).text() );
+                
                 System.out.println(" " + names.getElementsByTag("td").get(1).text() + " " + names.getElementsByTag("td").get(2).text() );
+                printWriter.println(" " + names.getElementsByTag("td").get(1).text() + " " + names.getElementsByTag("td").get(2).text() );
                 } else {
                 System.out.println(" " + names.getElementsByTag("td").get((gameNumber*6) + 4).text() + " " + names.getElementsByTag("td").get((gameNumber*6) + 3).text() );
+                printWriter.println(" " + names.getElementsByTag("td").get((gameNumber*6) + 4).text() + " " + names.getElementsByTag("td").get((gameNumber*6) + 3).text() );
+                
                 System.out.println(" " + names.getElementsByTag("td").get((gameNumber*6) + 1).text() + " " + names.getElementsByTag("td").get((gameNumber*6)+ 2).text() );
+                printWriter.println(" " + names.getElementsByTag("td").get((gameNumber*6) + 1).text() + " " + names.getElementsByTag("td").get((gameNumber*6)+ 2).text() );
                 }
             }
             System.out.println("------------------- ");	
+            printWriter.println("------------------- ");	
+            
             System.out.println("------------------- ");
+            printWriter.println("------------------- ");
             
 	 	
     }//end moneyLines
     
     
     
-    public String hitterStats(String playerID){
-    return "";}
+    public String hitterStats(String playerID) throws IOException{
+    	
+    	String last4Games = "";
+    	String theStats = "";
+    	String homeStats, awayStats, vsLeft, vsRight, totalStats;
+    	Document player = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=" + playerID).userAgent("mozilla/17.0").get();
+
+
+    	
+    	
+    	
+    	
+    	
+		//last 4 games.
+    	playerStats = player.select("div#gamelog.span49.gamelog-box");
+
+    		for (Element eachLast:playerStats){ 
+
+    			int AB =0;
+    			int H =0;
+    			double TB_ISO =0;
+    			float AVG = 0; 
+    			float ISO = 0;   // handle display decimals 
+    			int SO =0;
+
+    			try {
+    				
+    				for (int ee = 1; ee < 5; ee++){
+    					if (ee == 1){
+    						AB = AB + Integer.parseInt(eachLast.getElementsByTag("td").get(2).text());
+    						H = H + Integer.parseInt(eachLast.getElementsByTag("td").get(4).text());
+    						TB_ISO = TB_ISO + (Float.parseFloat(eachLast.getElementsByTag("td").get(5).text()) * .67) + (Float.parseFloat(eachLast.getElementsByTag("td").get(6).text()) * .67) + (Float.parseFloat(eachLast.getElementsByTag("td").get(7).text()));
+    						SO = SO + Integer.parseInt(eachLast.getElementsByTag("td").get(10).text());
+						
+    					} else {
+    						AB = AB + Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+2)).text()); 
+    						H = H + Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+4)).text());
+    						TB_ISO = TB_ISO + ((Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+5)).text())) * .67) + ((Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+6)).text())) * .67) + ((Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+7)).text())));
+    						SO = SO + Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+10)).text());
+    					}
+    				}			
+    			}//end try 
+    			catch (Exception e){}
+
+    			AVG = (float)H/AB; 
+    			ISO = (float)TB_ISO/AB; 
+		
+    			last4Games ="L4:"; 
+    			String battingAverage = String.format("(%.3f" , AVG); 
+    			last4Games = last4Games + "("+ battingAverage.substring(battingAverage.indexOf('.')) + "|";
+    			String battingD_ISO = String.format("%.3f" , ISO); 
+    			last4Games = last4Games + battingD_ISO.substring(battingD_ISO.indexOf('.')) + "|"; 
+    			last4Games = last4Games + SO + "SO"; 
+    			last4Games = last4Games + "|" + AB + "ABs)-";
+
+    		}//end last 4 games
+    	
+    	
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+
+    	//Get splits. Home/Away/vLeft/vRight
+		playerStats = player.select("div#splitstats.span49.mlb-player-splitsbox");
+
+			//Get splits. Home/Away/vLeft/vRight
+		    for (Element splitStats:playerStats){ 
+
+		                vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
+		                vsRight = "/VR:("  + splitStats.getElementsByTag("td").get((18*1)+6).text() + "|" + splitStats.getElementsByTag("td").get((18*1)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*1)+1).text() + "ABs)";
+		                homeStats = "H:("  + splitStats.getElementsByTag("td").get((18*2)+6).text() + "|" + splitStats.getElementsByTag("td").get((18*2)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*2)+1).text() + "ABs)";
+		                awayStats = "/A:("  + splitStats.getElementsByTag("td").get((18*3)+6).text() + "|" + splitStats.getElementsByTag("td").get((18*3)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*3)+1).text() + "ABs)";
+		                
+		                theStats = last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
+
+		    }//end of hitter splitStats line
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		        //players yearlyStats    
+		    int yearLines = player.select("div#basicstats.span49.mlb-player-basicstatsbox").select("tr").size();
+		    playerStats = player.select("div#basicstats.span49.mlb-player-basicstatsbox").select("tr").select("td"); //worked for long string
+
+		    for (int i =0; i< yearLines-1; i++){
+		    	
+		    	//check to see if has 2018 major league stats
+		    	//if(playerStats.get(i*25).text().matches("2018") && playerStats.get(i*25 +2).text().matches("MAJ")){
+		    	if(playerStats.get(i*25).text().matches("2018 Spring Training")){
+
+		        	//determine K rate by dividing to find a float then convert back to an int
+		        	int percent = (int)((float)(Integer.parseInt(playerStats.get(i*25 + 17).text()))/(Integer.parseInt(playerStats.get(i*25 + 5).text()))* 100);
+		        	totalStats = "-T:("+ playerStats.get(i*25 + 21).text() +"|" + playerStats.get(i*25 + 12).text() + "HR|" + playerStats.get(i*25 + 9).text() +"EBH|" + percent + "%K|" + playerStats.get(i*25 + 6).text() +"AB" + ")";
+		        	theStats = theStats + totalStats;
+
+		    	}//end if has major league 2018 stats.
+		    	
+		    	
+		    }//end check of each year.
+		    
+		    
+		    
+		
+		
+    return theStats;}
     
     
     
     public String pitcherStats(String playerID) throws IOException{
-        
+    	
+     
         
         Document player = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=" + playerID).userAgent("mozilla/17.0").get();
 
@@ -331,15 +519,12 @@ public class DailyReportT {
         //Direction hitter hits Left Right or Switch.
         handed = player.select("div.span49.mlb-player-otherinfo").select("b");
         
-        // System.out.println(handed.get(3).childNodes().get(0));
-        //System.out.print(handed.get(2).nextSibling().toString()); //This is what you want! 
-        
         pitcherHanded = handed.get(3).nextSibling().toString();
         pitcherHanded = pitcherHanded.substring(1,2) + "HP"; 
         pitcherHanded = "/" + pitcherHanded + " ";
         theStats = theStats + pitcherHanded;
         
-
+        printWriter.print(theStats);
         
         
         
@@ -360,31 +545,19 @@ public class DailyReportT {
 	        			+ "(BB/9)|" + playerStats.get(i*17 + 10).text() +"(HR/9)|" + playerStats.get(i*17 +11).text() + "(GB/FB)|" + playerStats.get(i*17 + 13).text() 
 	        			+ "(FBavg)|" + playerStats.get(i*17 + 14).text() + "(ERA)|" + playerStats.get(i*17 + 15).text() + "(FIP))";
 	        	theStats = theStats + totalStats;
-
+	        	printWriter.println(totalStats);
 	        	
 	    	}//end if has major league 2018 stats.
 	    	
 	    	
 	    }//end check of each year.
         
-        
-        
-        
-        System.out.println(theStats);
+	    
+ //       System.out.println(theStats);
 
         
         
-        
-        
-        
-        
-        
-        
-      
-        
-        
-        
-        
+
         
         
         
@@ -408,31 +581,17 @@ public class DailyReportT {
 
 		                pitcherSplits = "\t\t"+ homeStats + awayStats + vsLeft + vsRight;
 		                
-
+		                
 		    }//end of hitter splitStats line
         
-        
-                   
-                    System.out.println( pitcherSplits);
-        
-        
-        
+		    
+		    theStats = theStats + "\n" + pitcherSplits + "\n" ; 
+		    printWriter.println(pitcherSplits);
+//		    System.out.println(pitcherSplits);
         
         
         
-        
-        
-                
-        
-        
-        
-        
-        
-        
-                
-        
-        
-        
+
         
         
         
@@ -445,115 +604,88 @@ public class DailyReportT {
 
 
     		for (Element eachLast:playerStats){ 
-                    
-  //                      System.out.println(" " + eachLast.getElementsByTag("tr").eachText()); 
- //              		System.out.println(" " + eachLast.getElementsByTag("td").eachText()); 
+
                         
-                        // IP, R, H, BB, K, ERA/WHIP 
+                // IP, H, R, BB, K, ERA/WHIP 
                         
-                        String opponent; 
-    			int R = 0;
-    			int H =0;
-    			int ER =0;
-                        int HR =0;
-                        int BB =0;
-                        int K =0;
-                        
-    			float ERA = 0; 
-    			float WHIP = 0;   // handle display decimals 
+
     			
     			try {
     				
     				for (int ee = 1; ee < 5; ee++){
     					if (ee == 1){
-                                            
-                                            
-                                           // AB = AB + Integer.parseInt(eachLast.getElementsByTag("td").get(2).text());
-                                            //System.out.println(Integer.parseInt(eachLast.getElementsByTag("td").get(2).text()));
-                                            
-                                            
-                                           
-                                          //date
-                                            last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get(0).text()) + "-"; 
-                                            
-                                            //oppenent
-                                            last4Games =last4Games +  (eachLast.getElementsByTag("td").get(1).text()) + ")("; 
-                                            
-                                           // IP 
-                                            last4Games =last4Games +  (eachLast.getElementsByTag("td").get(2).text()) + "IP" + "/";
-                                            
-                                            //R 
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get(3).text()) + "H" + "/";
-                                            
-                                            
-                                             //R 
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get(4).text()) + "R" + "/";
-                                            
-                                           //HR
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get(6).text()) + "HR" + "/";
-                                            
-                                              //BB
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get(7).text()) + "BB" + "/";
-                                            
-                                             // K 
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get(8).text()) + "K" + "-";
-                                            
-                                             //ERA 
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get(16).text()) +"/";
-                                            
-                                             //WHIP
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get(17).text()) + ") ";
-                                            
-                                         //   System.out.println(last4Games); 
- 	
+
+                    last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get(0).text()) + "-";  //date               
+                    last4Games =last4Games +  (eachLast.getElementsByTag("td").get(1).text()) + ")(";  //opponent                  
+                    last4Games =last4Games +  (eachLast.getElementsByTag("td").get(2).text()) + "IP" + "/";  // IP                   
+                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(3).text()) + "H" + "/";   //H               
+                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(4).text()) + "R" + "/";       //R            
+                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(6).text()) + "HR" + "/";  //HR              
+                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(7).text()) + "BB" + "/";  //BB                   
+                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(8).text()) + "K" + "-";    // K                     
+                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(16).text()) +"/";  //ERA                   
+                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(17).text()) + ") ";//WHIP
+
     					} else {
                                             
 
-                                            last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get((((ee-1)*18))).text()) + "-";
-                                            last4Games =last4Games +  (eachLast.getElementsByTag("td").get((((ee-1)*18)+1)).text()) + ")("; 
-                                            last4Games =last4Games +  (eachLast.getElementsByTag("td").get((((ee-1)*18)+2)).text()) + "IP" + "/";
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+3)).text()) + "H" + "/";
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+4)).text()) + "R" + "/";
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+6)).text()) + "HR" + "/";
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+7)).text()) + "BB" + "/";
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+8)).text()) + "K" + "-";
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+16)).text()) +"/";
-                                            last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+17)).text()) + ") ";
-                                           
+    				last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get((((ee-1)*18))).text()) + "-";
+    				last4Games = last4Games +  (eachLast.getElementsByTag("td").get((((ee-1)*18)+1)).text()) + ")("; 
+    				last4Games = last4Games +  (eachLast.getElementsByTag("td").get((((ee-1)*18)+2)).text()) + "IP" + "/";
+    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+3)).text()) + "H" + "/";
+    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+4)).text()) + "R" + "/";
+    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+6)).text()) + "HR" + "/";
+    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+7)).text()) + "BB" + "/";	
+    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+8)).text()) + "K" + "-";
+					last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+16)).text()) +"/";
+					last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+17)).text()) + ") ";
+                    
                                             
     					}//end else
                                         
-                                        //add next line after second start for formatting
-                                        if (ee ==2){
-                                            last4Games = last4Games + "\n" +  "\t\t" ;}
-                                        else if(ee == 1){
-                                            last4Games =  "\t\t" +last4Games;}
-                                        else if( ee == 3){
-                                           // last4Games = last4Games +  "\t" ;
-                                        }
+    					//add next line after second start for formatting
+    					if (ee ==2){
+    						last4Games = last4Games + "\r\n" +  "\t\t" ;}
+    					else if(ee == 1){
+    						last4Games =  "\t\t" +last4Games;}
+    					else if( ee == 3){
+    						// last4Games = last4Games +  "\t" ;
+    					}
 
                                         
     				}//end ee for	
-                                
-                                System.out.println(last4Games); 
+                          
+    				
+    				
+    				theStats = theStats + last4Games +"\n"; 
+    				 printWriter.println(last4Games);
+ //   				System.out.println(last4Games); 
     			}//end try 
     			catch (Exception e){}
 
     		}//end last 4 games
 
-        
-        
-        
-        
-        
-    return "";}
-    
-    
+
+    	
+    return theStats;}
     
     
     
     public void weather(){}
     //city info??
     
+    
+    
+    public void createFile() throws IOException{
+    	
+    	//where the file will be sent
+    	fileOut = new FileWriter("C:\\Users\\Gavin.Susca\\Desktop\\" + theFile); 
+    	printWriter = new PrintWriter(fileOut); 
+    }
+    
+    public void closeFile() throws IOException{
+    	fileOut.close();
+        printWriter.close();
+    }
     
 }

@@ -1,4 +1,4 @@
-//package baseball;
+package baseball;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -20,7 +20,7 @@ import org.jsoup.*;
  *
  * @author gavinsusca
  */
-public class DailyReport {
+public class DRBB {
     Document games, lines;
     Elements allTodaysGames, linesML, pitchers, hitters, playerStats, handed, delays;
     int minusGamesH=0;
@@ -40,7 +40,7 @@ public class DailyReport {
             
     public static void main(String[] args) throws IOException { 
     
-        DailyReport theDay = new DailyReport(); 
+        DRBB theDay = new DRBB(); 
         
         for(int i=0; i< args.length; i++){
         	theDay.skipGames.add(Integer.parseInt(args[i]));
@@ -406,11 +406,11 @@ public class DailyReport {
     	
     	
     	
-    	
-		//last 4 games.
-    	playerStats = player.select("div#gamelog.span49.gamelog-box");
-
     	try{
+		//last 4 games.
+    	playerStats = player.select("div#gamelog.span49.gamelog-box").select("table.tablesorter").select("tr.gl7");
+
+    	
     	
     		for (Element eachLast:playerStats){ 
 
@@ -421,24 +421,40 @@ public class DailyReport {
     			float ISO = 0;   // handle display decimals 
     			int SO =0;
 
-    			try {
+    			
     				
     				for (int ee = 1; ee < 5; ee++){
+                                    
+                                    
+                                try {    
     					if (ee == 1){
+                                           eachLast = playerStats.get(ee-1);
     						AB = AB + Integer.parseInt(eachLast.getElementsByTag("td").get(2).text());
     						H = H + Integer.parseInt(eachLast.getElementsByTag("td").get(4).text());
     						TB_ISO = TB_ISO + (Float.parseFloat(eachLast.getElementsByTag("td").get(5).text()) * .67) + (Float.parseFloat(eachLast.getElementsByTag("td").get(6).text()) * .67) + (Float.parseFloat(eachLast.getElementsByTag("td").get(7).text()));
     						SO = SO + Integer.parseInt(eachLast.getElementsByTag("td").get(10).text());
 						
+                                               
+                                                
     					} else {
-    						AB = AB + Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+2)).text()); 
-    						H = H + Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+4)).text());
+                                            eachLast = playerStats.get(ee-1);
+    						AB = AB + Integer.parseInt(eachLast.getElementsByTag("td").get(2).text());
+    						H = H + Integer.parseInt(eachLast.getElementsByTag("td").get(4).text());
+    						TB_ISO = TB_ISO + (Float.parseFloat(eachLast.getElementsByTag("td").get(5).text()) * .67) + (Float.parseFloat(eachLast.getElementsByTag("td").get(6).text()) * .67) + (Float.parseFloat(eachLast.getElementsByTag("td").get(7).text()));
+    						SO = SO + Integer.parseInt(eachLast.getElementsByTag("td").get(10).text());
+                                            
+                                            
+                                                /*AB = AB + Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+2)).text()); 
+    						H = H + Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+4)).text());                                      
     						TB_ISO = TB_ISO + ((Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+5)).text())) * .67) + ((Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+6)).text())) * .67) + ((Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+7)).text())));
     						SO = SO + Integer.parseInt(eachLast.getElementsByTag("td").get((((ee-1)*20)+10)).text());
-    					}
-    				}			
-    			}//end try 
-    			catch (Exception e){}
+                                                 */
+                                        }
+                                      }catch (Exception e){}  
+      
+    				}
+                                
+    			
 
     			AVG = (float)H/AB; 
     			ISO = (float)TB_ISO/AB; 
@@ -455,8 +471,8 @@ public class DailyReport {
 
     		}//end last 4 games
     		
-    		}catch(Exception e){}	
-    	
+    			
+    	 }catch (Exception e){} 
     		
     		
     		
@@ -468,17 +484,26 @@ public class DailyReport {
     		
 
     	//Get splits. Home/Away/vLeft/vRight
-		playerStats = player.select("div#splitstats.span49.mlb-player-splitsbox");
-
+		playerStats = player.select("div#splitstats.span49.mlb-player-splitsbox").select("div.span17.mlb-player-splitsub");
+  
 			//Get splits. Home/Away/vLeft/vRight
 		    for (Element splitStats:playerStats){ 
+                        
+                        splitStats = playerStats.get(0); 
+		        vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
+		       
+                        splitStats = playerStats.get(1); 
+                        vsRight = "/VR:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
+		       
+                        splitStats = playerStats.get(2); 
+                        homeStats = "H:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
+                        
+                        splitStats = playerStats.get(3);        
+                      	awayStats = "/A:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
+		       
+		        theStats = last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
 
-		                vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
-		                vsRight = "/VR:("  + splitStats.getElementsByTag("td").get((9*1)+6).text() + "|" + splitStats.getElementsByTag("td").get((9*1)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((9*1)+1).text() + "ABs)";
-		                homeStats = "H:("  + splitStats.getElementsByTag("td").get((9*2)+6).text() + "|" + splitStats.getElementsByTag("td").get((9*2)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((9*2)+1).text() + "ABs)";
-		                awayStats = "/A:("  + splitStats.getElementsByTag("td").get((9*3)+6).text() + "|" + splitStats.getElementsByTag("td").get((9*3)+3).text() + "HRs|" + splitStats.getElementsByTag("td").get((9*3)+1).text() + "ABs)";
-		                
-		                theStats = last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
+
 
 		    }//end of hitter splitStats line
 		    
@@ -503,7 +528,7 @@ public class DailyReport {
 		    	
 		    	//check to see if has 2018 major league stats
 		    	//if(playerStats.get(i*25).text().matches("2018") && playerStats.get(i*25 +2).text().matches("MAJ")){
-		    	if(playerStats.get(i*25).text().matches("2017")){
+		    	if(playerStats.get(i*25).text().matches("2018") && playerStats.get(i*25 +2).text().matches("MAJ")){
 
 		        	//determine K rate by dividing to find a float then convert back to an int
 		        	int percent = (int)((float)(Integer.parseInt(playerStats.get(i*25 + 17).text()))/(Integer.parseInt(playerStats.get(i*25 + 5).text()))* 100);
@@ -538,7 +563,7 @@ public class DailyReport {
     	String pitcherSplits = "";
         String pitcherHanded, homeStats, awayStats, vsLeft, vsRight, totalStats; 
    
-    	        
+    	try {        
         //Direction hitter hits Left Right or Switch.
         handed = player.select("div.span49.mlb-player-otherinfo").select("b");
         
@@ -547,6 +572,8 @@ public class DailyReport {
         pitcherHanded = "/" + pitcherHanded + " ";
         theStats = theStats + pitcherHanded;
         
+        
+        }catch (Exception e){}
         printWriter.print(theStats);
         
         
@@ -633,22 +660,22 @@ public class DailyReport {
                         
 
     			
-    			try {
+    		try {	
     				
     				for (int ee = 1; ee < 5; ee++){
     					if (ee == 1){
-
-                    last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get(0).text()) + "-";  //date               
-                    last4Games =last4Games +  (eachLast.getElementsByTag("td").get(1).text()) + ")(";  //opponent                  
-                    last4Games =last4Games +  (eachLast.getElementsByTag("td").get(2).text()) + "IP" + "/";  // IP                   
-                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(3).text()) + "H" + "/";   //H               
-                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(4).text()) + "R" + "/";       //R            
-                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(6).text()) + "HR" + "/";  //HR              
-                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(7).text()) + "BB" + "/";  //BB                   
-                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(8).text()) + "K" + "-";    // K                     
-                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(16).text()) +"/";  //ERA                   
-                    last4Games = last4Games + (eachLast.getElementsByTag("td").get(17).text()) + ") ";//WHIP
-
+                                            
+                                last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get(0).text()) + "-";  //date               
+                                last4Games =last4Games +  (eachLast.getElementsByTag("td").get(1).text()) + ")(";  //opponent                  
+                                last4Games =last4Games +  (eachLast.getElementsByTag("td").get(2).text()) + "IP" + "/";  // IP                   
+                                last4Games = last4Games + (eachLast.getElementsByTag("td").get(3).text()) + "H" + "/";   //H               
+                                last4Games = last4Games + (eachLast.getElementsByTag("td").get(4).text()) + "R" + "/";       //R            
+                                last4Games = last4Games + (eachLast.getElementsByTag("td").get(6).text()) + "HR" + "/";  //HR              
+                                last4Games = last4Games + (eachLast.getElementsByTag("td").get(7).text()) + "BB" + "/";  //BB                   
+                                last4Games = last4Games + (eachLast.getElementsByTag("td").get(8).text()) + "K" + "-";    // K                     
+                                last4Games = last4Games + (eachLast.getElementsByTag("td").get(16).text()) +"/";  //ERA                   
+                                last4Games = last4Games + (eachLast.getElementsByTag("td").get(17).text()) + ") ";//WHIP
+                   
     					} else {
                                             
 
@@ -660,11 +687,14 @@ public class DailyReport {
     				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+6)).text()) + "HR" + "/";
     				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+7)).text()) + "BB" + "/";	
     				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+8)).text()) + "K" + "-";
-					last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+16)).text()) +"/";
-					last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+17)).text()) + ") ";
+				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+16)).text()) +"/";
+				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+17)).text()) + ") ";
                     
                                             
     					}//end else
+                                        
+                                     
+                                        
                                         
     					//add next line after second start for formatting
     					if (ee ==2){
@@ -678,13 +708,13 @@ public class DailyReport {
                                         
     				}//end ee for	
                           
-    				
+    			}//end try 
+    			catch (Exception e){}   	
     				
     				theStats = theStats + last4Games +"\n"; 
     				 printWriter.println(last4Games);
  //   				System.out.println(last4Games); 
-    			}//end try 
-    			catch (Exception e){}
+    			
 
     		}//end last 4 games
 

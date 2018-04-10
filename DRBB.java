@@ -1,4 +1,4 @@
-package baseball;
+//package baseball;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -331,7 +331,7 @@ public class DRBB {
             
             moneyLines(j); 
             pitcherInfo(j-1); 
-            lineUp(j-1);
+           lineUp(j-1);
            
         }//end of for loop
         
@@ -398,10 +398,30 @@ public class DRBB {
     	
     	String last4Games = "";
     	String theStats = "";
-    	String homeStats, awayStats, vsLeft, vsRight, totalStats;
+    	String homeStats="";
+    	String awayStats="";
+    	String vsLeft="";
+    	String vsRight="";
+    	String totalStats, hitterHanded;
     	Document player = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=" + playerID).userAgent("mozilla/17.0").get();
 
 
+    	try {        
+            //Direction hitter hits Left Right or Switch.
+            handed = player.select("div.span49.mlb-player-otherinfo").select("b");
+            
+            hitterHanded = handed.get(3).nextSibling().toString();
+            hitterHanded = hitterHanded.substring(1,2) + " "; 
+            hitterHanded = "/" + hitterHanded + " ";
+            theStats = theStats + hitterHanded;
+            
+            
+            }catch (Exception e){ theStats = theStats + "/   ";}
+            printWriter.print(theStats);
+    	
+    	
+    	
+    	
     	
     	
     	
@@ -490,7 +510,7 @@ public class DRBB {
 		    for (Element splitStats:playerStats){ 
                         
                         splitStats = playerStats.get(0); 
-		        vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
+                        vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
 		       
                         splitStats = playerStats.get(1); 
                         vsRight = "/VR:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
@@ -498,16 +518,18 @@ public class DRBB {
                         splitStats = playerStats.get(2); 
                         homeStats = "H:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
                         
+                        
+                        try{
                         splitStats = playerStats.get(3);        
                       	awayStats = "/A:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
-		       
-		        theStats = last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
-
-
+                        }catch (Exception e){}
 
 		    }//end of hitter splitStats line
 		    
-		    
+
+	        theStats = theStats + last4Games + "vP(add|Stats|here)-" + homeStats + awayStats + vsLeft + vsRight;
+
+   
 		    
 		    
 		    
@@ -711,14 +733,14 @@ public class DRBB {
     			}//end try 
     			catch (Exception e){}   	
     				
-    				theStats = theStats + last4Games +"\n"; 
-    				 printWriter.println(last4Games);
+
  //   				System.out.println(last4Games); 
     			
 
     		}//end last 4 games
 
-
+			theStats = theStats + last4Games +"\n"; 
+			 printWriter.println(last4Games);
     	
     return theStats;}
     

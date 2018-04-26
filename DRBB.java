@@ -331,7 +331,8 @@ public class DRBB {
             
             moneyLines(j); 
             pitcherInfo(j-1); 
-           lineUp(j-1);
+            if (j>13){
+           lineUp(j-1);};
            
         }//end of for loop
         
@@ -509,15 +510,21 @@ public class DRBB {
 			//Get splits. Home/Away/vLeft/vRight
 		    for (Element splitStats:playerStats){ 
                         
+		    			try{
                         splitStats = playerStats.get(0); 
                         vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
-		       
+		    			}catch (Exception e){}
+                        
+                        try{
                         splitStats = playerStats.get(1); 
                         vsRight = "/VR:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
-		       
-                        splitStats = playerStats.get(2); 
-                        homeStats = "H:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
+		    			}catch (Exception e){}
                         
+                        
+                        try {
+    					splitStats = playerStats.get(2); 
+                        homeStats = "H:("  + splitStats.getElementsByTag("td").get(6).text() + "|" + splitStats.getElementsByTag("td").get(3).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)" ;
+		    			}catch (Exception e){}
                         
                         try{
                         splitStats = playerStats.get(3);        
@@ -583,7 +590,11 @@ public class DRBB {
         String last4Games = "";
     	String theStats = "";
     	String pitcherSplits = "";
-        String pitcherHanded, homeStats, awayStats, vsLeft, vsRight, totalStats; 
+        String pitcherHanded, totalStats; 
+        String homeStats="";
+    	String awayStats="";
+    	String vsLeft="";
+    	String vsRight="";
    
     	try {        
         //Direction hitter hits Left Right or Switch.
@@ -610,7 +621,7 @@ public class DRBB {
 	    	
 	    	//check to see if has 2018 major league stats
 	    	//if(playerStats.get(i*25).text().matches("2018") && playerStats.get(i*25 +2).text().matches("MAJ")){
-	    	if(playerStats.get(i*17).text().matches("2017") && playerStats.get(i*17 +2).text().matches("MAJ")){
+	    	if(playerStats.get(i*17).text().matches("2018") && playerStats.get(i*17 +2).text().matches("MAJ")){
 
 	    		
 	        	totalStats = "T:("+ playerStats.get(i*17 + 6).text() +"IP|" + playerStats.get(i*17 + 7).text() + "(K/9)|" + playerStats.get(i*17 + 8).text() 
@@ -634,23 +645,42 @@ public class DRBB {
         
         
     	//Get splits. Home/Away/vLeft/vRight
-		playerStats = player.select("div#splitstats.span49.mlb-player-splitsbox");
+		//playerStats = player.select("div#splitstats.span49.mlb-player-splitsbox");
+		playerStats = player.select("div#splitstats.span49.mlb-player-splitsbox").select("div.span17.mlb-player-splitsub");
+		  
 
 			//Get splits. Home/Away/vLeft/vRight
 		    for (Element splitStats:playerStats){ 
             try{
+            	
+            	
+            	
 	        //determine K rate by dividing to find a float then convert back to an int
-	        	int percentL = (int)((float)(Integer.parseInt(splitStats.getElementsByTag("td").get(2).text()))/(Integer.parseInt(splitStats.getElementsByTag("td").get(1).text()))* 100);
-	        	int percentR = (int)((float)(Integer.parseInt(splitStats.getElementsByTag("td").get((18*1)+2).text()))/(Integer.parseInt(splitStats.getElementsByTag("td").get((18*1)+1).text()))* 100);
-		    	
+	        	
+            	
+            			try{
+            			splitStats = playerStats.get(0); 
+            			int percentL = (int)((float)(Integer.parseInt(splitStats.getElementsByTag("td").get(2).text()))/(Integer.parseInt(splitStats.getElementsByTag("td").get(1).text()))* 100);
 		                vsLeft = "-VL:(" + splitStats.getElementsByTag("td").get(8).text() + "|" + splitStats.getElementsByTag("td").get(4).text() + "Hs|" + percentL + "K%|" + splitStats.getElementsByTag("td").get(3).text() + "BBs|" + splitStats.getElementsByTag("td").get(7).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)"  ;       
-		                vsRight = "/VR:("  + splitStats.getElementsByTag("td").get((18*1)+8).text() + "|" + splitStats.getElementsByTag("td").get((18*1)+4).text() + "Hs|" + percentR + "K%|" + splitStats.getElementsByTag("td").get((18*1)+3).text() + "BBs|" + splitStats.getElementsByTag("td").get((18*1)+7).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*1)+1).text() + "ABs)";
-		                   
+            			}catch (Exception e){}
 		                
-		                homeStats = "H:("  + splitStats.getElementsByTag("td").get((18*2)+1).text() + "IP|" + splitStats.getElementsByTag("td").get((18*2)+5).text() + "Ks|" + splitStats.getElementsByTag("td").get((18*2)+6).text() + "BBs|" + splitStats.getElementsByTag("td").get((18*2)+7).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*2)+8).text() + "|" + splitStats.getElementsByTag("td").get((18*2)+9).text() + ")";
-		                //added an extra two to all the add statements because homeStats for pitchers had a couple extra fields. 
-		                awayStats = "/A:("  + splitStats.getElementsByTag("td").get((18*3)+3).text() + "IP|" + splitStats.getElementsByTag("td").get((18*3)+7).text() + "Ks|" + splitStats.getElementsByTag("td").get((18*3)+8).text() + "BBs|" + splitStats.getElementsByTag("td").get((18*3)+9).text() + "HRs|" + splitStats.getElementsByTag("td").get((18*3)+10).text() + "|" + splitStats.getElementsByTag("td").get((18*3)+11).text() + ")";
-
+            			try{
+		                splitStats = playerStats.get(1); 
+		                int percentR = (int)((float)(Integer.parseInt(splitStats.getElementsByTag("td").get(2).text()))/(Integer.parseInt(splitStats.getElementsByTag("td").get(1).text()))* 100);
+		                vsRight = "/VR:("  + splitStats.getElementsByTag("td").get(8).text() + "|" + splitStats.getElementsByTag("td").get(4).text() + "Hs|" + percentR + "K%|" + splitStats.getElementsByTag("td").get(3).text() + "BBs|" + splitStats.getElementsByTag("td").get(7).text() + "HRs|" + splitStats.getElementsByTag("td").get(1).text() + "ABs)";
+            			}catch (Exception e){}
+		                
+		                try{
+		                splitStats = playerStats.get(2); 
+		                homeStats = "H:("  + splitStats.getElementsByTag("td").get(1).text() + "IP|" + splitStats.getElementsByTag("td").get(5).text() + "Ks|" + splitStats.getElementsByTag("td").get(6).text() + "BBs|" + splitStats.getElementsByTag("td").get(7).text() + "HRs|" + splitStats.getElementsByTag("td").get(8).text() + "|" + splitStats.getElementsByTag("td").get(9).text() + ")";
+            			}catch (Exception e){}
+		                
+		                
+		                try{
+		                splitStats = playerStats.get(3); 
+		                awayStats = "/A:("  + splitStats.getElementsByTag("td").get(1).text() + "IP|" + splitStats.getElementsByTag("td").get(5).text() + "Ks|" + splitStats.getElementsByTag("td").get(6).text() + "BBs|" + splitStats.getElementsByTag("td").get(7).text() + "HRs|" + splitStats.getElementsByTag("td").get(8).text() + "|" + splitStats.getElementsByTag("td").get(9).text() + ")";
+            			}catch (Exception e){}
+		                
 		                pitcherSplits = "\t\t"+ homeStats + awayStats + vsLeft + vsRight;
             }catch (Exception e){}         
 		                
@@ -662,7 +692,7 @@ public class DRBB {
 //		    System.out.println(pitcherSplits);
         
         
-        
+       
 
         
         
@@ -671,8 +701,9 @@ public class DRBB {
         
         
         //last 4 games.
-    	playerStats = player.select("div#gamelog.span49.gamelog-box");
-        
+    	//playerStats = player.select("div#gamelog.span49.gamelog-box");
+    	playerStats = player.select("div#gamelog.span49.gamelog-box").select("table.tablesorter").select("tbody");
+
 
 
     		for (Element eachLast:playerStats){ 
@@ -686,7 +717,8 @@ public class DRBB {
     				
     				for (int ee = 1; ee < 5; ee++){
     					if (ee == 1){
-                                            
+    						
+
                                 last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get(0).text()) + "-";  //date               
                                 last4Games =last4Games +  (eachLast.getElementsByTag("td").get(1).text()) + ")(";  //opponent                  
                                 last4Games =last4Games +  (eachLast.getElementsByTag("td").get(2).text()) + "IP" + "/";  // IP                   
@@ -697,21 +729,22 @@ public class DRBB {
                                 last4Games = last4Games + (eachLast.getElementsByTag("td").get(8).text()) + "K" + "-";    // K                     
                                 last4Games = last4Games + (eachLast.getElementsByTag("td").get(16).text()) +"/";  //ERA                   
                                 last4Games = last4Games + (eachLast.getElementsByTag("td").get(17).text()) + ") ";//WHIP
-                   
+    						
     					} else {
-                                            
+    						
+    						
 
-    				last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get((((ee-1)*18))).text()) + "-";
-    				last4Games = last4Games +  (eachLast.getElementsByTag("td").get((((ee-1)*18)+1)).text()) + ")("; 
-    				last4Games = last4Games +  (eachLast.getElementsByTag("td").get((((ee-1)*18)+2)).text()) + "IP" + "/";
-    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+3)).text()) + "H" + "/";
-    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+4)).text()) + "R" + "/";
-    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+6)).text()) + "HR" + "/";
-    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+7)).text()) + "BB" + "/";	
-    				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+8)).text()) + "K" + "-";
-				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+16)).text()) +"/";
-				last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+17)).text()) + ") ";
-                    
+    							last4Games = last4Games + "(" + (eachLast.getElementsByTag("td").get((((ee-1)*18))).text()) + "-";
+    							last4Games = last4Games +  (eachLast.getElementsByTag("td").get((((ee-1)*18)+1)).text()) + ")("; 
+    							last4Games = last4Games +  (eachLast.getElementsByTag("td").get((((ee-1)*18)+2)).text()) + "IP" + "/";
+    							last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+3)).text()) + "H" + "/";
+    							last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+4)).text()) + "R" + "/";
+    							last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+6)).text()) + "HR" + "/";
+    							last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+7)).text()) + "BB" + "/";	
+    							last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+8)).text()) + "K" + "-";
+    							last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+16)).text()) +"/";
+    							last4Games = last4Games + (eachLast.getElementsByTag("td").get((((ee-1)*18)+17)).text()) + ") ";
+    					
                                             
     					}//end else
                                         

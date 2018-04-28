@@ -1,5 +1,18 @@
 //package baseball;
 
+/*
+
+add teamAvg
+add adjustTeam avg 
+adjusted PlayerAvg
+
+*/
+
+
+
+
+
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

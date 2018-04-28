@@ -38,6 +38,8 @@ public class DRBB {
     Elements allTodaysGames, linesML, pitchers, hitters, playerStats, handed, delays;
     int minusGamesH=0;
     int minusGamesP=0;
+    float teamAvg =0; 
+    boolean avgFlag = false; 
     
     ArrayList<Integer> skipGames = new ArrayList<Integer>(); 
     
@@ -121,7 +123,8 @@ public class DRBB {
         printWriter.println("--------");
         
 
-        
+        //set Team Avg to zero 
+        teamAvg = 0; 
             for (int f =0; f < 9; f++){
 	
          
@@ -167,7 +170,9 @@ public class DRBB {
 						
 	}//end of Lineup1
             
-            
+          		    //section for team avg 
+        System.out.println("Team Avg: " + (teamAvg));                    
+        System.out.println("Team Avg: " + (teamAvg/.009));     
             
         System.out.print("\n--------");
         printWriter.print("\n--------");
@@ -178,7 +183,9 @@ public class DRBB {
         System.out.println("--------");
         printWriter.println("--------");
         
-        
+      
+        //reset team avg
+        teamAvg = 0; 
             for (int f =0; f < 9; f++){
 	
               //  theHitter = hitters.get((gameNumber*8)+3); 
@@ -220,6 +227,9 @@ public class DRBB {
             
 	 }//end of Lineup2     
     
+        System.out.println("Team Avg: " + (teamAvg));                    
+        System.out.println("Team Avg: " + (teamAvg/.009)); 
+            
         }//end delayIF
     }
     
@@ -344,7 +354,7 @@ public class DRBB {
             
             moneyLines(j); 
             pitcherInfo(j-1); 
-            if (j != 6 && j<8){
+            if (j<8){
            lineUp(j-1);};
            
         }//end of for loop
@@ -418,7 +428,7 @@ public class DRBB {
     	String vsRight="";
     	String totalStats, hitterHanded;
     	Document player = Jsoup.connect("https://www.rotowire.com/baseball/player.htm?id=" + playerID).userAgent("mozilla/17.0").get();
-
+        float last4Avg; 
 
     	try {        
             //Direction hitter hits Left Right or Switch.
@@ -437,7 +447,7 @@ public class DRBB {
     	
     	
     	
-    	
+    	float AVG = 0;
     	
     	
     	try{
@@ -451,7 +461,7 @@ public class DRBB {
     			int AB =0;
     			int H =0;
     			double TB_ISO =0;
-    			float AVG = 0; 
+    		//	A 
     			float ISO = 0;   // handle display decimals 
     			int SO =0;
 
@@ -492,6 +502,8 @@ public class DRBB {
 
     			AVG = (float)H/AB; 
     			ISO = (float)TB_ISO/AB; 
+                        
+
 		
     			last4Games ="L4:"; 
     			String battingAverage = String.format("(%.3f" , AVG); 
@@ -501,14 +513,22 @@ public class DRBB {
     			last4Games = last4Games + SO + "SO"; 
     			last4Games = last4Games + "|" + AB + "ABs)-";
     			
-    		
 
     		}//end last 4 games
-    		
+    		                        //calculate team aaaavg
+             
     			
     	 }catch (Exception e){} 
-    		
-    		
+                    
+        if (avgFlag ==false){
+                            teamAvg = teamAvg + AVG;
+                               avgFlag = true;}
+        else {
+        avgFlag = false;}
+        
+    		      //     System.out.println(AVG + "Team AVG -- " + teamAvg); 
+                     //   teamAvg = teamAvg + AVG; 
+                     //   System.out.println(teamAvg); 
     		
     		
     		
@@ -585,7 +605,7 @@ public class DRBB {
 		    }//end check of each year.
 		    
 		    
-		    
+
 		
 		
     return theStats;}

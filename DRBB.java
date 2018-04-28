@@ -344,7 +344,7 @@ public class DRBB {
             
             moneyLines(j); 
             pitcherInfo(j-1); 
-            if (j>13){
+            if (j != 6 && j<8){
            lineUp(j-1);};
            
         }//end of for loop
@@ -424,7 +424,7 @@ public class DRBB {
             //Direction hitter hits Left Right or Switch.
             handed = player.select("div.span49.mlb-player-otherinfo").select("b");
             
-            hitterHanded = handed.get(3).nextSibling().toString();
+            hitterHanded = handed.get(2).nextSibling().toString();
             hitterHanded = hitterHanded.substring(1,2) + " "; 
             hitterHanded = "/" + hitterHanded + " ";
             theStats = theStats + hitterHanded;

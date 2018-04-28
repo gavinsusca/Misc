@@ -5,7 +5,7 @@
 add teamAvg
 add adjustTeam avg 
 adjusted PlayerAvg
-
+add avg over 4 starts points calculator.
 */
 
 //hello world

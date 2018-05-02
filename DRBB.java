@@ -171,7 +171,8 @@ public class DRBB {
 	}//end of Lineup1
             
           		    //section for team avg 
-        System.out.println("Team Avg: " + (teamAvg));                    
+        System.out.println("Team Avg: " + (teamAvg));    
+        printWriter.println("Team Avg: " + teamAvg);
         System.out.println("Team Avg: " + (teamAvg/.009));     
             
         System.out.print("\n--------");
@@ -227,7 +228,8 @@ public class DRBB {
             
 	 }//end of Lineup2     
     
-        System.out.println("Team Avg: " + (teamAvg));                    
+        System.out.println("Team Avg: " + (teamAvg));
+        printWriter.println("Team Avg: " + teamAvg);
         System.out.println("Team Avg: " + (teamAvg/.009)); 
             
         }//end delayIF
@@ -354,8 +356,9 @@ public class DRBB {
             
             moneyLines(j); 
             pitcherInfo(j-1); 
-            if (j<8){
-           lineUp(j-1);};
+   //         if (j<8){
+           lineUp(j-1);
+   //        };
            
         }//end of for loop
         
@@ -499,10 +502,10 @@ public class DRBB {
     				}
                                 
     			
-
+    				if (AB>0){  //fix of NaN && no more division by zero.
     			AVG = (float)H/AB; 
     			ISO = (float)TB_ISO/AB; 
-                        
+    				};
 
 		
     			last4Games ="L4:"; 
@@ -520,7 +523,9 @@ public class DRBB {
     			
     	 }catch (Exception e){} 
                     
-        if (avgFlag ==false){
+    	
+    	
+        if (avgFlag ==false && AVG != 0){
                             teamAvg = teamAvg + AVG;
                                avgFlag = true;}
         else {

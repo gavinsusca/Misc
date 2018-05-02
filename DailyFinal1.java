@@ -6,6 +6,7 @@ add teamAvg
 add adjustTeam avg 
 adjusted PlayerAvg
 add avg over 4 starts points calculator.
+adjust divide by if pitcher is included.
 */
 
 //hello world
@@ -33,13 +34,11 @@ import org.jsoup.*;
  *
  * @author gavinsusca
  */
-public class DRBB {
+public class DailyFinal1 {
     Document games, lines;
     Elements allTodaysGames, linesML, pitchers, hitters, playerStats, handed, delays;
     int minusGamesH=0;
     int minusGamesP=0;
-    float teamAvg =0; 
-    boolean avgFlag = false; 
     
     ArrayList<Integer> skipGames = new ArrayList<Integer>(); 
     
@@ -55,7 +54,7 @@ public class DRBB {
             
     public static void main(String[] args) throws IOException { 
     
-        DRBB theDay = new DRBB(); 
+    	DailyFinal1 theDay = new DailyFinal1(); 
         
         for(int i=0; i< args.length; i++){
         	theDay.skipGames.add(Integer.parseInt(args[i]));
@@ -81,7 +80,7 @@ public class DRBB {
         hitters = games.select("div.span15").select("div.span15").select("div.dlineups-half"); 
         Element theHitter; 
         Boolean delayFlag = false;
-       
+        String hitterStatOutput = ""; 
     
        
        // 0 , 1 , 2 , 3 , 4 
@@ -123,8 +122,6 @@ public class DRBB {
         printWriter.println("--------");
         
 
-        //set Team Avg to zero 
-        teamAvg = 0; 
             for (int f =0; f < 9; f++){
 	
          
@@ -160,8 +157,12 @@ public class DRBB {
             //So you don't get hitters stats for the NL pitchers in the lineup
             if(!position.equalsIgnoreCase("P")){  
 //            	System.out.print(playerID);
-             System.out.print(hitterStats(playerID));  //where you will send playerID to get playStats
-             printWriter.print(hitterStats(playerID));
+            	
+            //Found bug.. calling the stat function twice. 
+            // taking 2x as long rather than storing into a string.
+            hitterStatOutput = hitterStats(playerID);  //where you will send playerID to get playStats
+            System.out.print(hitterStatOutput);
+            printWriter.print(hitterStatOutput);
             	
             }
             
@@ -170,10 +171,7 @@ public class DRBB {
 						
 	}//end of Lineup1
             
-          		    //section for team avg 
-        System.out.println("Team Avg: " + (teamAvg));    
-        printWriter.println("Team Avg: " + teamAvg);
-        System.out.println("Team Avg: " + (teamAvg/.009));     
+
             
         System.out.print("\n--------");
         printWriter.print("\n--------");
@@ -185,8 +183,7 @@ public class DRBB {
         printWriter.println("--------");
         
       
-        //reset team avg
-        teamAvg = 0; 
+
             for (int f =0; f < 9; f++){
 	
               //  theHitter = hitters.get((gameNumber*8)+3); 
@@ -216,9 +213,10 @@ public class DRBB {
 
             //So you don't get hitters stats for the NL pitchers in the lineup
             if(!position.equalsIgnoreCase("P")){  
-            	
-            System.out.print(hitterStats(playerID));   //where you will send playerID to get playStats
-            printWriter.print(hitterStats(playerID));
+
+            hitterStatOutput = hitterStats(playerID);  //where you will send playerID to get playStats
+            System.out.print(hitterStatOutput);
+            printWriter.print(hitterStatOutput);
             	
             }
             
@@ -228,9 +226,7 @@ public class DRBB {
             
 	 }//end of Lineup2     
     
-        System.out.println("Team Avg: " + (teamAvg));
-        printWriter.println("Team Avg: " + teamAvg);
-        System.out.println("Team Avg: " + (teamAvg/.009)); 
+
             
         }//end delayIF
     }
@@ -444,7 +440,7 @@ public class DRBB {
             
             
             }catch (Exception e){ theStats = theStats + "/   ";}
-            printWriter.print(theStats);
+//            printWriter.print(theStats);
     	
     	
     	
@@ -524,19 +520,7 @@ public class DRBB {
     	 }catch (Exception e){} 
                     
     	
-    	
-        if (avgFlag ==false && AVG != 0){
-                            teamAvg = teamAvg + AVG;
-                               avgFlag = true;}
-        else {
-        avgFlag = false;}
-        
-    		      //     System.out.println(AVG + "Team AVG -- " + teamAvg); 
-                     //   teamAvg = teamAvg + AVG; 
-                     //   System.out.println(teamAvg); 
-    		
-    		
-    		
+
     		
     		
     		
@@ -645,7 +629,7 @@ public class DRBB {
         
         
         }catch (Exception e){}
-        printWriter.print(theStats);
+ //       printWriter.print(theStats);
         
         
         
@@ -666,7 +650,7 @@ public class DRBB {
 	        			+ "(BB/9)|" + playerStats.get(i*17 + 10).text() +"(HR/9)|" + playerStats.get(i*17 +11).text() + "(GB/FB)|" + playerStats.get(i*17 + 13).text() 
 	        			+ "(FBavg)|" + playerStats.get(i*17 + 14).text() + "(ERA)|" + playerStats.get(i*17 + 15).text() + "(FIP))";
 	        	theStats = theStats + totalStats;
-	        	printWriter.println(totalStats);
+//	        	printWriter.println(totalStats);
 	        	
 	    	}//end if has major league 2018 stats.
 	    	
@@ -674,7 +658,7 @@ public class DRBB {
 	    }//end check of each year.
         
 	    
- //       System.out.println(theStats);
+//       System.out.println(theStats);
 
         
         
@@ -726,7 +710,7 @@ public class DRBB {
         
 		    
 		    theStats = theStats + "\n" + pitcherSplits + "\n" ; 
-		    printWriter.println(pitcherSplits);
+//		    printWriter.println(pitcherSplits);
 //		    System.out.println(pitcherSplits);
         
         
@@ -811,7 +795,7 @@ public class DRBB {
     		}//end last 4 games
 
 			theStats = theStats + last4Games +"\n"; 
-			 printWriter.println(last4Games);
+//			 printWriter.println(last4Games);
     	
     return theStats;}
     

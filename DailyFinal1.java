@@ -12,6 +12,10 @@ adjust divide by if pitcher is included.
 //hello world
 //line 673
 
+//
+
+//multi command line
+
 
 
 import java.io.File;
@@ -40,7 +44,9 @@ public class DailyFinal1 {
     int minusGamesH=0;
     int minusGamesP=0;
     
-    ArrayList<Integer> skipGames = new ArrayList<Integer>(); 
+    ArrayList<Integer> skipGames = new ArrayList<Integer>(); //postponed games
+    char noLineup[] = new char[20]; //skip lineup
+  
     
     //for file 
     String nameFile = "dailyReport";
@@ -57,9 +63,19 @@ public class DailyFinal1 {
     	DailyFinal1 theDay = new DailyFinal1(); 
         
         for(int i=0; i< args.length; i++){
-        	theDay.skipGames.add(Integer.parseInt(args[i]));
-        }
+        	try{
+        		theDay.skipGames.add(Integer.parseInt(args[i]));
+        	} catch (Exception e) {
+        		theDay.noLineup[i] = ((args[i].charAt(1)));
+        	}
+        }//end of command line lists
    
+        
+    
+        
+        
+        
+        
         
         
             theDay.games = Jsoup.connect("https://www.rotowire.com/baseball/daily_lineups.htm").userAgent("mozilla/17.0").get();
@@ -76,7 +92,71 @@ public class DailyFinal1 {
     } //end of main
     
     
-    public void lineUp(int gameNumber) throws IOException{
+    public void headerinfo() throws IOException{
+	     
+    	    Boolean noLineupFlag = false;
+	        allTodaysGames = games.select("div.span15.dlineups-topbox");
+	        int j = 0;
+	        
+	
+	        
+	        for (Element today:allTodaysGames){ 
+	            j++;
+		    System.out.println("\n\n");
+		    printWriter.println("\n\n");
+		    
+		    System.out.println();
+		    printWriter.println();
+		    
+	            System.out.println("Game " + j); 
+	            printWriter.println("Game " + j); 
+	            
+	            System.out.println(today.getElementsByTag("div").first().text());
+	            printWriter.println(today.getElementsByTag("div").first().text());
+	            
+	            System.out.println("------------------- ");	
+	            printWriter.println("------------------- ");	
+	            
+	            overUnder(j-1);
+	            System.out.println("------------------- ");	
+	            printWriter.println("------------------- ");	
+	            
+	            moneyLines(j); 
+	            pitcherInfo(j-1); 
+	 
+	            
+	            noLineupFlag = noLineUpPosted(j);
+	            if(noLineupFlag != true){ lineUp(j-1); }
+	        	   
+	           
+	           
+	        	}//end of for loop allTodaysGames
+	        
+	        
+	    }//end of headerInfo
+
+    
+    
+    
+    //lets you skip any lineup using command line parameters.
+    public boolean noLineUpPosted(int game){
+    	
+    	
+    	for(int n =0,  nL = noLineup.length; n < nL; n++){
+            
+    		if(Character.getNumericValue(noLineup[n]) == game){ return true; }//of of noLineup arraylist check.  
+
+    	}//end of forloop to check all elements in noLineup AL
+    	
+    	
+    	return false; 
+    	
+    }//end of noLpPosted
+    
+    
+    
+
+	public void lineUp(int gameNumber) throws IOException{
         hitters = games.select("div.span15").select("div.span15").select("div.dlineups-half"); 
         Element theHitter; 
         Boolean delayFlag = false;
@@ -319,49 +399,6 @@ public class DailyFinal1 {
     }//end of pitcherInfo
     
 
-    
-    
-    public void headerinfo() throws IOException{
-     
-        
-        allTodaysGames = games.select("div.span15.dlineups-topbox");
-        int j = 0;
-        
-
-        
-        for (Element today:allTodaysGames){ 
-            j++;
-	    System.out.println("\n\n");
-	    printWriter.println("\n\n");
-	    
-	    System.out.println();
-	    printWriter.println();
-	    
-            System.out.println("Game " + j); 
-            printWriter.println("Game " + j); 
-            
-            System.out.println(today.getElementsByTag("div").first().text());
-            printWriter.println(today.getElementsByTag("div").first().text());
-            
-            System.out.println("------------------- ");	
-            printWriter.println("------------------- ");	
-            
-            overUnder(j-1);
-            System.out.println("------------------- ");	
-            printWriter.println("------------------- ");	
-            
-            moneyLines(j); 
-            pitcherInfo(j-1); 
-   //         if (j<8){
-           lineUp(j-1);
-   //        };
-           
-        }//end of for loop
-        
-        
-    }//end of headerInfo
-    
-    
     
     
     public void overUnder(int overUnder){
